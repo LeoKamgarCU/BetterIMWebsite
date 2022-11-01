@@ -1,0 +1,28 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>
+    <div class="container">
+        <h1> Register </h1>
+        <form action="/register" method="POST">
+            <div>
+              <label class="form-label"> Username </label>
+              <input type="text" class="form-control" name="username" required> <br>
+            </div>
+      
+            <div>
+              <label  class="form-label"> Password </label>
+              <input  type="password" class="form-control" name="password"required> <br>       
+            </div>
+
+            <div>
+                <label  class="form-label"> Confirm Password </label>
+                <input  type="password" class="form-control" name="password"required> <br>       
+            </div>
+
+            <button class="btn btn-primary" type="submit">Register</button>
+          </form>
+    </div>
+</main>
+
+<%- include ('../partials/footer') %>
