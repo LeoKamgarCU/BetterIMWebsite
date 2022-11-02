@@ -3,9 +3,6 @@ Section Number: 12
 Team Number: 6  
 Team Name: Recreational Developers  
 
-
-Meeting Plan:  
-
 TA weekly meeting:  
 Monday  
 4:30 - 4:45 pm   
@@ -24,18 +21,22 @@ Theo Bragstad
 GitHub: Theobragstad   
 Email: thbr4871@colorado.edu  
 Phone: 720-299-4398  
+
 Zach Chen  
 GitHub: zach2898  
 Email: zach2898@colorado.edu  
 Phone: 303-523-6937  
+
 Jaxon Paulsen  
 GitHub: japa2103  
 Email: japa2103@colorado.edu  
 Phone: 303-882-7353  
+
 Leo Kamgar  
 GitHub: LeoKamgarCU  
 Email: leka5026@colorado.edu  
-Phone: 949-677-4774  
+Phone: 949-677-4774
+
 Jacob Friedman  
 GitHub: jacobef  
 Email: jafr7644@colorado.edu  
@@ -53,8 +54,7 @@ Our web app will allow users to register an account as a player and then log in.
 The website will use a database to store the various leagues, teams, games, and players. The players can each individually access their own games and schedules, so each user will have a personalized experience when they log in. We may also use an API in the application depending on if we decide to  implement additional features, such as using the Google Calendar API to integrate events with users’ personal calendars, as opposed to a fully functional calendar built from scratch. We may also add a ranking system for players and teams.  
 
 Vision Statement:   
-
-For college kids and anyone else who need an easy way to manage their intramural, club, or recreational athletic teams. IMProved is a web app that offers a simple, fast, and intuitive way to explore, join, and create teams. Unlike IMLeagues.com, our product is not full of ads and confusing, buggy multi-step interfaces.   
+For college kids and anyone else who needs an easy way to manage their intramural, club, or recreational athletic teams. IMProved is a web app that offers a simple, fast, and intuitive way to explore, join, and create teams. Unlike IMLeagues.com, our product is not full of ads and confusing, buggy multi-step interfaces.   
 
 Communication Plan:  
 We will be using primarily Discord for communication with each other. As needed, we may also utilize additional methods including a text group chat, google docs, and email.  
