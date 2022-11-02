@@ -1,0 +1,36 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>
+    <div class="col"><%- include ('../partials/message') %></div>
+    <div class="container">
+        <h1>Login</h1>
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-control" name= "username" id = "username" aria-describedby="userHelp"
+                    placeholder="Enter username" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="text" class="form-control" name= "password" id = "password" aria-describedby="passHelp"
+                    placeholder="Enter password" required>
+            </div>
+            <div class="container p-2">
+            <button onclick = "" class="btn btn-primary" type="submit">Login</button>
+        </div>
+        </form>
+    
+        <form action="/register" method="get">
+            <div class="container p-2">
+                Don't have an account?
+            </div>
+            <div class="container p-2">
+                <button class="btn btn-outline-primary" type="submit">Register</button>
+            </div>
+        </form>
+    
+    </div>
+</main>
+
+<%- include ('../partials/footer') %>
