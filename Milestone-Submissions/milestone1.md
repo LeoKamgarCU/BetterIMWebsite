@@ -1,8 +1,3 @@
-Link to google doc with lab 10 submission for milestone 1:
-https://docs.google.com/document/d/179UV0ZhrLlhARALyJg2A5bx98Y0MN09qFbXFndu3jNc/edit?usp=sharing
-
-
-
 CSCI 3308 Team Project
 Section Number: 12
 Team Number: 6
