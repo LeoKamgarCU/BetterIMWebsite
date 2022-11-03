@@ -1,0 +1,17 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>
+    <div class="container">
+        <form action="/save_profile" method="POST">
+            <label class="form-label"> Username </label>
+            <input type="text" class="form-control" name="username" value="<%= user.username %>"> <br>
+
+            <label class="form-label"> Password </label>
+            <a href="/change_password">Change password</a>
+            <input type="text" class="form-control" name="username" value="username"> <br>
+        </form>
+    </div>
+</main>
+
+<%- include ('../partials/footer') %>
