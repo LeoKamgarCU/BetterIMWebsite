@@ -60,5 +60,8 @@ Communication Plan:
 We will be using primarily Discord for communication with each other. As needed, we may also utilize additional methods including a text group chat, google docs, and email.  
 
 
-Use Case Diagram and Wireframes:  
+Wireframe:  
 https://www.figma.com/file/pXCpPUDdXtLuFqpw9BgRrZ/IMProved?node-id=0%3A1
+
+Use case diagram:
+https://lucid.app/lucidchart/fd323abf-2473-4da0-a5e5-c993eef00c43/edit?viewport_loc=-77%2C-721%2C5045%2C2416%2C0_0&invitationId=inv_cc884859-876b-4b4d-bd06-72fb3940f8c9
