@@ -6,10 +6,36 @@
         <h1> Register </h1>
         <form action="/register" method="POST">
             <div>
-              <label class="form-label"> Username </label>
+              <label class="form-label">Username</label>
               <input type="text" class="form-control" name="username" required> <br>
             </div>
       
+              <div class="mb-3">
+                  <label class="form-label">Class</label>
+                  <select class="form-select" required>
+                      <option selected disabled value=""></option>
+                      <option value="freshman">Freshman</option>
+                      <option value="sophomore">Sophomore</option>
+                      <option value="junior">Junior</option>
+                      <option value="senior">Senior</option>
+                      <option value="other">Other</option>
+                  </select>
+              </div>
+
+
+              <div class="input-group mb-3">
+                <label class="input-group-text" for="inputGroupFile01">Profile Photo</label>
+                <input type="file" class="form-control" id="inputGroupFile01">
+              </div>
+
+
+
+
+
+
+
+
+
             <div>
               <label  class="form-label"> Password </label>
               <input  type="password" class="form-control" name="password"required> <br>       

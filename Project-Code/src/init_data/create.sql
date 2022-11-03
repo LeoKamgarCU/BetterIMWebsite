@@ -4,7 +4,6 @@ CREATE TABLE players (
     password VARCHAR(100) NOT NULL,
     classYear VARCHAR(9) NOT NULL,
     joinDate DATE NOT NULL,
-    profilePhoto IMAGE
 );
 
 CREATE TABLE games (
