@@ -7,17 +7,18 @@ Registration/login:
 Tell user to register/login –> the following should happen:  
 User clicks on register button if they are not logged in and have not previously registered with the site 
 User is directed to the registration page 
-User inputs their desired username, password, class year, profile photo (not required) 
-Test data should include all types of characters for the username and password, including passwords that do not meet the minimum security requirements.  
+User inputs their desired username, password, confirm password, class year, profile photo (not required) 
+Test data should include all types of characters for the username and password, including passwords that do not meet the minimum security requirements and passwords that do not match.
 For example: username = “user1”, password = “123” should fail because the password is too weak  
 username = “user1”, password = “Quwheu$?” should be successful because the password is strong  
 User must fill in all inputs and correctly format all fields  
 User clicks register   
-password is hashed and inputted data is inserted into the users table via POST method  
-If successful, the user is redirected to login page and a success message is displayed  
+password is hashed and inputted data is inserted into the users database table via POST method  
+If registration is successful, the user is redirected to login page and a success message is displayed  
 The user then logs in by entering their username and password  
-The user is then redirected to the home page  
-If unsuccessful, the user is redirected to the register page and an error message is displayed  
+If the user exists in the database and the credentials are correct, the user is then redirected to the home page  
+Otherwise, a message is displayed informing the user that the username or password is incorrect.
+If registration is unsuccessful, the user is redirected to the register page and an error message is displayed  
 
 Test environment: a locally running instance of the website server  
 Test results: explained above (everything should work as expected/outlined above)  
