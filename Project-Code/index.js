@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const path = require('path');
 const pgp = require('pg-promise')();
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -41,6 +42,21 @@ app.use(bodyParser.urlencoded({
     extended: true,
 })
 );
+
+app.set('views', path.join(__dirname, '/src/views'))
+
+
+
+app.get("/", (req, res) => {
+    return res.render("./pages/home");
+});
+
+
+
+
+
+
+
 
 app.listen(3000);
 console.log('Server is listening on port 3000');
