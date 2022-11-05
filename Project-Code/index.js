@@ -29,6 +29,7 @@ db.connect()
     });
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '/src/views'))
 app.use(bodyParser.json());
 app.use(
     session({
@@ -37,26 +38,38 @@ app.use(
         resave: false,
     })
 );
-
 app.use(bodyParser.urlencoded({
     extended: true,
 })
 );
 
-app.set('views', path.join(__dirname, '/src/views'))
-
-
+// Begin Routing
 
 app.get("/", (req, res) => {
-    return res.render("./pages/home");
+    return res.render("pages/home");
 });
 
+app.get("/about", (req, res) => {
+    return res.render("pages/about");
+});
 
+app.get("/login", (req, res) => {
+    return res.render("pages/login");
+});
 
+app.get("/profile", (req, res) => {
+    return res.render("pages/profile");
+});
 
+app.get("/register", (req, res) => {
+    return res.render("pages/register");
+});
 
+app.get("/logout", (req, res) => {
+    return res.render("pages/login");
+});
 
-
+// End Routing
 
 app.listen(3000);
 console.log('Server is listening on port 3000');
