@@ -28,6 +28,12 @@ db.connect()
         console.log('ERROR:', error.message || error);
     });
 
+    
+    
+    app.use(express.static('src/resources'));
+
+
+
 app.set('view engine', 'ejs');
 app.use(bodyParser.json());
 app.use(
@@ -43,15 +49,37 @@ app.use(bodyParser.urlencoded({
 })
 );
 
+
+
+
 app.set('views', path.join(__dirname, '/src/views'))
 
 
 
-app.get("/", (req, res) => {
+app.get("/home", (req, res) => {
     return res.render("./pages/home");
 });
 
+app.get("/", (req, res) => {
+    return res.redirect('/home');
+});
 
+
+app.get("/register", (req, res) => {
+    return res.render('./pages/register');
+});
+
+app.get("/login", (req, res) => {
+    return res.render('./pages/login');
+});
+
+
+
+
+//
+app.get('/image', function (req, res) {
+    return res.sendFile('/src/resources/img/favicon.png');
+});
 
 
 
