@@ -78,25 +78,23 @@ app.get("/logout", (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    try {
-        // TODO: This won't work because passwords in the database are hashed. You can't just search the raw password
-        const user = await db.one("SELECT * FROM players WHERE username=$1 AND password=$2",
-            [req.body.username, req.body.password]);
-        if (!user) {
-            res.redirect("/register");
-        }
-        const match = await bcrypt.compare(req.body.password, user.password);
-        if (match) {
-            req.session.user = user;
-            req.session.save();
-            return res.redirect("/discover");
-        } else {
-            return res.render("pages/login");
-        }
-    }
-    catch (err) {
-        return res.render("pages/register");
-    }
+    const query = "Select * FROM players WHERE playerName = $1;";
+    db.one(query, [req.body.playerName])
+        .then(async (user) => {
+            const match = await bcrypt.compare(req.body.password, user.password);
+            if (!match) {
+                console.log("Incorrect username or password");
+                res.redirect("/login");
+            } else {
+                req.session.user = user;
+                req.session.save();
+                res.redirect('/profile');
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            res.redirect('/login');
+        });
 });
 
 
