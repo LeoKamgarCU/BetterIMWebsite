@@ -69,6 +69,26 @@ app.get("/logout", (req, res) => {
     return res.render("pages/login");
 });
 
+app.post("/login", (req, res) => {
+
+});
+
+app.post("/register", async (req, res) => {
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const tempClassYear = 2022;
+    const tempProfilePhoto = '';
+    const tempJoinDate = 2022;
+    const insertQuery = 'INSERT INTO players (playerName, password, classYear, profilePhoto, joinDate) VALUES ($1, $2, $3, $4, $5);';
+    db.any(insertQuery, [req.body.username, hash, tempClassYear, tempProfilePhoto, tempJoinDate])
+        .then(() => {
+            res.redirect("/login");
+        })
+        .catch((err) => {
+            console.log(err);
+            res.redirect("/register");
+        })
+});
+
 // End Routing
 
 app.listen(3000);
