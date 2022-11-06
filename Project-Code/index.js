@@ -35,6 +35,7 @@ db.connect()
 
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '/src/views'))
 app.use(bodyParser.json());
 app.use(
     session({
@@ -43,48 +44,58 @@ app.use(
         resave: false,
     })
 );
-
 app.use(bodyParser.urlencoded({
     extended: true,
 })
 );
 
-
-
-
-app.set('views', path.join(__dirname, '/src/views'))
-
-
-
-app.get("/home", (req, res) => {
-    return res.render("./pages/home");
-});
+// Begin Routing
 
 app.get("/", (req, res) => {
-    return res.redirect('/home');
+    return res.render("pages/home");
 });
 
-
-app.get("/register", (req, res) => {
-    return res.render('./pages/register');
+app.get("/about", (req, res) => {
+    return res.render("pages/about");
 });
 
 app.get("/login", (req, res) => {
-    return res.render('./pages/login');
+    return res.render("pages/login");
 });
 
-
-
-
-//
-app.get('/image', function (req, res) {
-    return res.sendFile('/src/resources/img/favicon.png');
+app.get("/profile", (req, res) => {
+    return res.render("pages/profile");
 });
 
+app.get("/register", (req, res) => {
+    return res.render("pages/register");
+});
 
+app.get("/logout", (req, res) => {
+    return res.render("pages/login");
+});
 
+app.post("/login", (req, res) => {
 
+});
 
+app.post("/register", async (req, res) => {
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const tempClassYear = 2022;
+    const tempProfilePhoto = '';
+    const tempJoinDate = 2022;
+    const insertQuery = 'INSERT INTO players (playerName, password, classYear, profilePhoto, joinDate) VALUES ($1, $2, $3, $4, $5);';
+    db.any(insertQuery, [req.body.username, hash, tempClassYear, tempProfilePhoto, tempJoinDate])
+        .then(() => {
+            res.redirect("/login");
+        })
+        .catch((err) => {
+            console.log(err);
+            res.redirect("/register");
+        })
+});
+
+// End Routing
 
 app.listen(3000);
 console.log('Server is listening on port 3000');
