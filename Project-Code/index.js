@@ -5,7 +5,6 @@ const pgp = require('pg-promise')();
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
-const axios = require('axios');
 
 // database configuration
 const dbConfig = {
@@ -28,14 +27,9 @@ db.connect()
         console.log('ERROR:', error.message || error);
     });
 
-    
-    
-    app.use(express.static('src/resources'));
-
-
-
+app.use(express.static('src/resources'));
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '/src/views'))
+app.set('views', path.join(__dirname, '/src/views'));
 app.use(bodyParser.json());
 app.use(
     session({
