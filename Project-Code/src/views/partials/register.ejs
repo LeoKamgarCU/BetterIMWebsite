@@ -1,44 +1,51 @@
-    <form action="/register" method="POST">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" name= "username" id = "username" aria-describedby="userHelp"
-                    placeholder="Username" required>
+<div class="text-center">
+  <button class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475" data-bs-toggle="modal" data-bs-target="#registerModal">Create new account</button>
+</div>
+
+<form action="/register" method="POST">
+  <div class="modal fade" id="registerModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+        <h1 class="modal-title fs-3">Sign Up</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-  
-          
+        <div class="modal-body">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" id="username" placeholder="Username" required>
+          </div>
 
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" id="password" placeholder="Password" required>
+          </div>
 
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" required>
+          </div>
 
-
-
-
-
-
-
-        <div class="input-group mb-3">
-            <input type="password" class="form-control" name= "password" id = "password" aria-describedby="userHelp"
-            placeholder="Password" required>
-        </div>
-
-        <div class="input-group mb-3">
-            <input type="password" class="form-control" name= "password" id = "confirmPassword" aria-describedby="userHelp"
-            placeholder="Confirm Password" required>
-        </div>
-        <div class="input-group mb-3">
-          <label class="input-group-text" for="inputGroupSelect01">Class of</label>
-            <select class="form-select" id="inputGroupSelect01" required>
-                <option selected disabled value=""></option>
-                <option value="2023">2023</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="NA">Other/NA</option>
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="classYear">Class of</label>
+            <select class="form-select" id="classYear" required>
+              <option selected disabled value=""></option>
+              <option value="2023">2023</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026">2026</option>
+              <option value="Other/NA">Other/NA</option>
             </select>
-        </div>
+          </div>
 
+          <div class="input-group mb-3">
+            <label class="input-group-text" for="profilePhoto">Profile Photo</label>
+            <input type="file" accept=".jpg,.gif,.png" class="form-control" id="profilePhoto">
+          </div>
 
-        <div class="input-group mb-3">
-          <label class="input-group-text" for="inputGroupFile01">Profile Photo</label>
-          <input type="file" accept=".jpg,.gif,.png" class="form-control" id="inputGroupFile01">
         </div>
-        </form>
-        
+        <div class="modal-footer">
+          <button type="button" class="btn rounded-pill" style="background-color:#dedee3; color:#9c9cac" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475">Sign Up</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

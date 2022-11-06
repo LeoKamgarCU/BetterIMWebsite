@@ -2,68 +2,23 @@
 
 <main>
     <div class="container">
-
-    <div class="col"><%- include ('../partials/message') %></div>
-    
-
+      <div class="col"><%- include ('../partials/message') %></div>
         <div class="text-center">
-        <!-- <img  src="./img/logo.png" style="width:25%; padding-top: 10vh;"> -->
-        <img  src="./img/logo.png" style="width:25%; padding-top: 10vh; padding-bottom: 2vh;">
-
-    </div>
-        <h1 class="text-center"> Log In </h1>
-    <div class="input-group mb-3 justify-content-center text-center">
-        <form action="/login" method="POST">
+          <img  src="./img/logo.png" style="width:25%; padding-top:10vh; padding-bottom:2vh;">
+        </div>
+        <h1 class="text-center">Log In</h1>
+        <div class="input-group mb-3 justify-content-center text-center">
+          <form action="/login" method="POST">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" name= "username" id = "username" aria-describedby="userHelp"
-                    placeholder="Username" required>
+              <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
             </div>
             <div class="input-group mb-3">
-                <input type="text" class="form-control" name= "password" id = "password" aria-describedby="passHelp"
-                    placeholder="Password" required>
+              <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
             </div>
-            <button onclick = "" class="btn rounded-pill" style="background-color:#ecf8f8; color:#1fbebe" type="submit">Log In</button>
-        </form>       
-    </div>
-    <div class="text-center">
-        <button type="button" class="btn rounded-pill text-center" style="background-color:#e8fcec; color:#17d475" data-bs-toggle="modal" data-bs-target="#exampleModal">Create new account</button>
-    </div>
-    
-    
-   
-
-
-
-
-
-
-    
-
-    
-       
-
-        <!-- Button trigger modal -->
-
-  
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header text-center">
-          <h1 class="modal-title fs-3" id="exampleModalLabel">Sign Up</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button class="btn rounded-pill" style="background-color:#ecf8f8; color:#1fbebe" type="">Log In</button>
+          </form>       
         </div>
-        <div class="modal-body">
-            <%- include ('../partials/register') %>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn rounded-pill" style="background-color:#dedee3; color:#9c9cac"data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475">Sign Up</button>
-        </div>
-      </div>
-    </div>
-  </div>
-    
+    <%- include ('../partials/register') %>
   </div>
 </main>
 
