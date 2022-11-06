@@ -1,14 +1,17 @@
 <%- include ('../partials/header') %>
 
 <main>
+    <div class="container">
+
     <div class="col"><%- include ('../partials/message') %></div>
     
 
-    <div class="vh-100">
         <div class="text-center">
-        <img  src="./img/logo.png" style="width:10%; padding-top: 16vh;">
+        <!-- <img  src="./img/logo.png" style="width:25%; padding-top: 10vh;"> -->
+        <img  src="./img/logo.png" style="width:75%; padding-top: 10vh; padding-bottom: 2vh;">
+
     </div>
-        <h1 class="text-center" style="padding-top: 8vh"> Log In </h1>
+        <h1 class="text-center"> Log In </h1>
     <div class="input-group mb-3 justify-content-center text-center">
         <form action="/login" method="POST">
             <div class="input-group mb-3">
@@ -28,7 +31,6 @@
     
     
    
-</div>
 
 
 
@@ -62,6 +64,7 @@
     </div>
   </div>
     
+  </div>
 </main>
 
 <%- include ('../partials/footer') %>

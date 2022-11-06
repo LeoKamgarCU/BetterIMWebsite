@@ -51,17 +51,25 @@ app.use(bodyParser.urlencoded({
 
 // Begin Routing
 
+// NOTE: pages to render must have './pages/page' format due to project structure
+
 app.get("/", (req, res) => {
-    return res.render("pages/home");
+    return res.render("./pages/home");
 });
+
+
+
+app.get("/login", (req, res) => {
+    return res.render('./pages/login');
+});
+
+
 
 app.get("/about", (req, res) => {
     return res.render("pages/about");
 });
 
-app.get("/login", (req, res) => {
-    return res.render("pages/login");
-});
+
 
 app.get("/profile", (req, res) => {
     return res.render("pages/profile", { user: sess });
