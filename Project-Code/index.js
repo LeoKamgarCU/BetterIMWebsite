@@ -64,7 +64,7 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
-    return res.render("pages/profile");
+    return res.render("pages/profile", { user: sess });
 });
 
 app.get("/register", (req, res) => {
@@ -75,9 +75,27 @@ app.get("/logout", (req, res) => {
     return res.render("pages/login");
 });
 
-app.post("/login", (req, res) => {
-
+app.post('/login', async (req, res) => {
+    try {
+        const user = await db.one("SELECT * FROM players WHERE username=$1 AND password=$2",
+            [req.body.username, req.body.password]);
+        if (!user) {
+            res.redirect("/register");
+        }
+        const match = await bcrypt.compare(req.body.password, user.password);
+        if (match) {
+            req.session.user = user;
+            req.session.save();
+            return res.redirect("/discover");
+        } else {
+            return res.render("pages/login");
+        }
+    }
+    catch (err) {
+        return res.render("pages/register");
+    }
 });
+
 
 app.post("/register", async (req, res) => {
     const hash = await bcrypt.hash(req.body.password, 10);
