@@ -79,6 +79,7 @@ app.get("/logout", (req, res) => {
 
 app.post('/login', async (req, res) => {
     try {
+        // TODO: This won't work because passwords in the database are hashed. You can't just search the raw password
         const user = await db.one("SELECT * FROM players WHERE username=$1 AND password=$2",
             [req.body.username, req.body.password]);
         if (!user) {
