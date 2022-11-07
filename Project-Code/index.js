@@ -97,8 +97,11 @@ app.post("/register", async (req, res) => {
     const tempClassYear = 2022;
     const tempProfilePhoto = '';
     const tempJoinDate = 2022;
+    const date = new Date();
+    const joinDate = date.toISOString().split('T')[0];
+    console.log(joinDate);
     const insertQuery = 'INSERT INTO players (playerName, password, classYear, profilePhoto, joinDate) VALUES ($1, $2, $3, $4, $5);';
-    db.any(insertQuery, [req.body.username, hash, tempClassYear, tempProfilePhoto, tempJoinDate])
+    db.any(insertQuery, [req.body.username, hash, tempClassYear, tempProfilePhoto, joinDate])
         .then(() => {
             res.redirect("/login");
         })
