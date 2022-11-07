@@ -72,8 +72,8 @@ app.get("/logout", (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    const query = "Select * FROM players WHERE playerName = $1;";
-    db.one(query, [req.body.playerName])
+    const query = "Select * FROM players WHERE username = $1;";
+    db.one(query, [req.body.username])
         .then(async (user) => {
             const match = await bcrypt.compare(req.body.password, user.password);
             if (!match) {
