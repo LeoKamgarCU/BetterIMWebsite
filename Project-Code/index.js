@@ -63,14 +63,8 @@ app.get("/about", (req, res) => {
     return res.render("pages/about");
 });
 
-
-
 app.get("/profile", (req, res) => {
     return res.render("pages/profile", { user: sess });
-});
-
-app.get("/register", (req, res) => {
-    return res.render("pages/register");
 });
 
 app.get("/logout", (req, res) => {
