@@ -1,35 +1,25 @@
 <%- include ('../partials/header') %>
 
 <main>
-    <div class="col"><%- include ('../partials/message') %></div>
     <div class="container">
-        <h1>Login</h1>
-        <form action="/login" method="post">
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" class="form-control" name= "username" id = "username" aria-describedby="userHelp"
-                    placeholder="Enter username" required>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="text" class="form-control" name= "password" id = "password" aria-describedby="passHelp"
-                    placeholder="Enter password" required>
-            </div>
-            <div class="container p-2">
-            <button onclick = "" class="btn btn-primary" type="submit">Login</button>
+      <div class="col"><%- include ('../partials/message') %></div>
+        <div class="text-center">
+          <img  src="./img/logo.png" style="width:25%; padding-top:10vh; padding-bottom:2vh;">
         </div>
-        </form>
-    
-        <form action="/register" method="get">
-            <div class="container p-2">
-                Don't have an account?
+        <h1 class="text-center">Log In</h1>
+        <div class="input-group mb-3 justify-content-center text-center">
+          <form action="/login" method="POST">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
             </div>
-            <div class="container p-2">
-                <button class="btn btn-outline-primary" type="submit">Register</button>
+            <div class="input-group mb-3">
+              <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
             </div>
-        </form>
-    
-    </div>
+            <button class="btn rounded-pill" style="background-color:#ecf8f8; color:#1fbebe" type="">Log In</button>
+          </form>       
+        </div>
+    <%- include ('../partials/register') %>
+  </div>
 </main>
 
 <%- include ('../partials/footer') %>
