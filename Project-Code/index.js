@@ -68,6 +68,7 @@ app.get("/profile", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
+    req.session.destroy();
     return res.render("pages/login");
 });
 
