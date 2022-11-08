@@ -94,14 +94,12 @@ app.post('/login', async (req, res) => {
 
 app.post("/register", async (req, res) => {
     const hash = await bcrypt.hash(req.body.password, 10);
-    const tempClassYear = 2022;
     const tempProfilePhoto = '';
-    const tempJoinDate = 2022;
+    const classYear = /\d/.test(req.body.classYear) ? req.body.classYear : '0';
     const date = new Date();
     const joinDate = date.toISOString().split('T')[0];
-    console.log(joinDate);
     const insertQuery = 'INSERT INTO players (playerName, password, classYear, profilePhoto, joinDate) VALUES ($1, $2, $3, $4, $5);';
-    db.any(insertQuery, [req.body.username, hash, tempClassYear, tempProfilePhoto, joinDate])
+    db.any(insertQuery, [req.body.username, hash, classYear, tempProfilePhoto, joinDate])
         .then(() => {
             res.redirect("/login");
         })
