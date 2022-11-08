@@ -64,7 +64,7 @@ app.get("/about", (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
-    return res.render("pages/profile", { user: sess });
+    return res.render("pages/profile", { user: req.session.user });
 });
 
 app.get("/logout", (req, res) => {
