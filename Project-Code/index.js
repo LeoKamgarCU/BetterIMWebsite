@@ -79,7 +79,10 @@ app.post('/login', async (req, res) => {
             const match = await bcrypt.compare(req.body.password, user.password);
             if (!match) {
                 console.log("Incorrect username or password");
-                res.redirect("/login");
+                res.render("/login",{
+                    message: "Incorrect username or password",
+                    error: 1
+                });
             } else {
                 req.session.user = user;
                 req.session.save();
