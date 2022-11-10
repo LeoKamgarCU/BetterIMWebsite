@@ -60,7 +60,7 @@ app.get("/login", (req, res) => {
 
 
 app.get("/about", (req, res) => {
-    return res.render("partials/about");
+    return res.render("./partials/about");
 });
 
 app.get("/profile", (req, res) => {
