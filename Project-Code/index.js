@@ -63,6 +63,27 @@ app.get("/about", (req, res) => {
     return res.render("pages/about");
 });
 
+app.get("/sports", (req, res) => {
+    const all_sports = `
+  SELECT *
+  FROM
+    sports
+  ORDER BY sportName ASC;`;
+    db.any(all_sports)
+    .then((sports) => {
+        console.log(sports)
+      res.render("./pages/sports", {
+        sports
+      });
+    })
+    .catch((err) => {
+      res.render("./pages/home", {
+        error: true,
+        message: "No sports found in database."
+      });
+    });
+});
+
 app.get("/profile", (req, res) => {
     return res.render("pages/profile", { user: req.session.user });
 });
