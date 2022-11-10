@@ -3,14 +3,18 @@
 
 <main>
     <div class="container">
-        <h3> Your Profile </h3>
-        <form action="/save_profile" method="POST">
+        <h3> Your Profile  <a href="/edit_profile">[Edit]</a> </h3>
+        <form action="/profile" method="POST">
             <label class="form-label"> Username </label>
-            <input type="text" class="form-control" name="username" value="<%= user.username %>"> <br>
+            <input type="text" class="form-control" value="<%= user.username %>" disabled> <br>
 
-            <label class="form-label"> Password </label>
+            <label class="form-label"> Name </label>
+            <input type="text" class="form-control" value="<%= user.playername %>" disabled> <br>
+
+            <label class="form-label"> Class year </label>
+            <input type="text" class="form-control" value="<%= user.classyear %>" disabled> <br>
+
             <a href="/change_password">Change password</a>
-            <input type="text" class="form-control" name="username" value="username"> <br>
         </form>
     </div>
 </main>

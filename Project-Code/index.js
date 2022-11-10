@@ -67,6 +67,32 @@ app.get("/profile", (req, res) => {
     return res.render("pages/profile", { user: req.session.user });
 });
 
+app.get("/edit_profile", (req, res) => {
+    return res.render("pages/edit_profile", { user : req.session.user });
+})
+
+app.post("/edit_profile", (req, res) => {
+    console.log(req.session.user);
+    db.one("UPDATE players SET username = $1, playerName = $2, classYear = $3 WHERE playerID = $4 RETURNING playerID;",
+        [req.body.username, req.body.playername, req.body.classyear, req.session.user.playerid])
+        .then( (playerID) => {
+            db.one("SELECT * FROM players WHERE playerID = $1", [playerID.playerid])
+                .then( (user) => {
+                    req.session.user = user;
+                    req.session.save();
+                    return res.render("pages/profile", { user: req.session.user });
+                })
+                .catch( (err) => {
+                    console.log(err);
+                    return res.render("pages/edit_profile", { user: req.session.user });
+                })
+        })
+        .catch( (err) => {
+            console.log(err);
+            return res.render("pages/edit_profile", { user: req.session.user });
+        });
+})
+
 app.get("/logout", (req, res) => {
     req.session.destroy();
     return res.render("pages/login");
