@@ -135,7 +135,10 @@ app.post("/register", async (req, res) => {
         })
         .catch((err) => {
             console.log(err);
-            res.redirect("/login");
+            res.render("pages/login",{
+                message: "Username Already Taken",
+                error: 1
+            });
         });
 });
 
