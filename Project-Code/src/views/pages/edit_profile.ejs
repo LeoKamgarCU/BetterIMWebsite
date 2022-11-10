@@ -1,0 +1,26 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>
+    <div class="container">
+        <h3> Your Profile </h3>
+        <form action="/edit_profile" method="POST">
+            <input type="hidden" name="playerid" value="<%= user.playerID %>">
+
+            <label class="form-label"> Username </label>
+            <input type="text" class="form-control" name="username" value="<%= user.username %>"> <br>
+
+            <label class="form-label"> Name </label>
+            <input type="text" class="form-control" name="playername" value="<%= user.playername %>"> <br>
+
+            <label class="form-label"> Class year </label>
+            <input type="text" class="form-control" name="classyear" value="<%= user.classyear %>"> <br>
+
+            <a href="/change_password">Change password</a><br>
+
+            <input type="submit" value="Save changes">
+        </form>
+    </div>
+</main>
+
+<%- include ('../partials/footer') %>
