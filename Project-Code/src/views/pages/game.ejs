@@ -1,0 +1,19 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<div class="text-center">
+    <h1 style="color:#1e90ff; padding-top:2vh;">Game Details</h1>
+    <h3> <%= teaminfo[0].teamname%> VS <%= teaminfo[1].teamname%></h3>
+<h5>ID:   <span style="color:#1e90ff"> <%= rows[0].gameid %></span></h5> 
+<h5>Date (mm-dd-yyyy):     <span style="color:#1e90ff"> <%= rows[0].gamedate.getMonth()+1 %>-<%=  rows[0].gamedate.getDate()%>-<%= rows[0].gamedate.getFullYear() %></span></h5> 
+    <h5>Time (hh:mm):    <span style="color:#1e90ff">  <%= rows[0].time.substring(0,5) %></span></h5> 
+        <h5>Location:     <span style="color:#1e90ff"> <%= rows[0].location %></span></h5> 
+
+        <p> <%=user.playerid %> </p>
+        
+
+
+        <h3> Result: Team 2 won</h3>
+</div>
+
+<%- include ('../partials/footer') %>
