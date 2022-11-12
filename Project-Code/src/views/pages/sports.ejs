@@ -5,9 +5,9 @@
       <div class="col">
         <%- include ('../partials/message') %>
       </div>
-      <div class="container p-4">
+      <div class="container text-center p-4">
         <!-- THE REST OF YOUR HTML CODE GOES HERE -->
-        <h1>Discover sports</h1>
+        <h1 style="padding-top:2vh; padding-bottom:2vh">Discover Sports</h1>
         <%sports.forEach(function(sport, index){ let hrefName="/teams/" +sport.sportname; if((index%2)==0){%>
           <div class="row p-2">
             <%}%>
