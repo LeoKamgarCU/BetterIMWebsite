@@ -8,25 +8,28 @@
 
 <main>
     <div class="container text-center">
-        <h1 style="padding-top:2vh; padding-bottom:2vh">All games</h1>
+        <h1 style="padding-top:2vh; padding-bottom:2vh">All upcoming games</h1>
         <h6 style="color:#949494">Click a date below to view the game details</h6>
+        <h8 style="color:#949494">If there are no games, then all games in the database have passed.</h8>
 
         <div style="padding-top:2vh">
             <a href="yourUpcomingGames" class="btn rounded-pill" style="background-color:#1e90ff; color:#ffffff">Your upcoming games</a>
-            <a href="allUpcomingGames" class="btn rounded-pill" style="background-color:#1e90ff; color:#ffffff">All upcoming games</a>
+            <a href="allGames" class="btn rounded-pill" style="background-color:#1e90ff; color:#ffffff">All games</a>
 
         </div>
 
         <% if(games.length == 0) { %>
-            <h4 style="padding-top:5vh;color:#17d475">No games in the database</h4>
+            <h4 style="padding-top:5vh;color:#17d475">No upcoming games</h4>
             <% } %>
 
 
            
+            <% var today = new Date()%>
 
 
                 <% games.forEach(function(game){ %>
 
+                    <% if(!((game.gamedate.getFullYear() < today.getFullYear()) || ((game.gamedate.getFullYear() == today.getFullYear()) && (game.gamedate.getMonth()<today.getMonth()))  ||   ((game.gamedate.getFullYear() == today.getFullYear()) && (game.gamedate.getMonth()==today.getMonth()) &&(game.gamedate.getDate()<today.getDate())))) {%>
 
                     <form action="/game" method="GET">
                         <input class="form-control" name="gameid" id="gameid" value="<%= game.gameid%>" type="hidden">
@@ -38,6 +41,7 @@
                       </button>
                     </div>
                   </form>
+                  <% } %>
 
                             
                         

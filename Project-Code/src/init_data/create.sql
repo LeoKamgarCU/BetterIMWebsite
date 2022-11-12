@@ -31,7 +31,8 @@ CREATE TABLE playersToMessages (
 CREATE TABLE games (
     gameID SERIAL PRIMARY KEY NOT NULL,
     gameDate DATE NOT NULL,
-    time TIME NOT NULL
+    time TIME NOT NULL,
+    location TEXT NOT NULL
 );
 
 CREATE TABLE sports (
