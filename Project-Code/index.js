@@ -179,34 +179,80 @@ app.post("/register", async (req, res) => {
 
 
 
-app.get("/games", (req, res) => {
-    const query = `INSERT INTO teamsToPlayers (playerID, teamID) VALUES (1, 1); SELECT * FROM games WHERE gameid IN (SELECT gameid FROM teamsToGames WHERE teamsToGames.teamID IN (SELECT teamid FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid}));`;
+app.get("/yourUpcomingGames", (req, res) => {
+    const checkOnTeam = `SELECT * FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid};`;
+    
+
+
+
+    const query = `INSERT INTO teamsToPlayers VALUES (1,9); SELECT * FROM games WHERE gameid IN (SELECT gameid FROM teamsToGames WHERE teamsToGames.teamID IN (SELECT teamid FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid}));`;
   
     db.any(query)
       .then((games) => {
-        res.render("./pages/games", {
-          games,
+        db.any(checkOnTeam)
+        .then((teams) => {
+          res.render("./pages/yourUpcomingGames", {games, teams});
+        })
+        .catch((err) => {
+          console.log(err);
+          res.render("./pages/yourUpcomingGames", {error: true});
         });
+
+
+    
       })
       .catch((err) => {
-        res.render("./pages/games", {
+        console.log(err);
+        res.render("./pages/yourUpcomingGames", {
+          games: [],
+          error: true,
+        });
+      });
+  });
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  app.get("/allUpcomingGames", (req, res) => {
+    const query = `SELECT * FROM games ORDER BY gameDate DESC, time ASC;`;
+  
+    db.any(query)
+      .then((games) => {
+        res.render("./pages/allUpcomingGames", {
+          games,
+        });
+       
+      })
+      .catch((err) => {
+        res.render("./pages/allUpcomingGames", {
           games: [],
           error: true,
           message: err.message,
         });
       });
   });
-  
-
 
   app.get("/allGames", (req, res) => {
-    const query = `SELECT * FROM games;`;
+    const query = `SELECT * FROM games ORDER BY gameDate DESC, time ASC;`;
   
     db.any(query)
       .then((games) => {
         res.render("./pages/allGames", {
           games,
         });
+       
       })
       .catch((err) => {
         res.render("./pages/allGames", {
@@ -216,7 +262,19 @@ app.get("/games", (req, res) => {
         });
       });
   });
-  
+ 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -226,11 +284,11 @@ app.get("/game", (req, res) => {
     db.any(`SELECT teamname, teamid FROM teams WHERE teamid IN(SELECT teamid FROM teamsToGames WHERE gameID = $1 LIMIT 2);`, [req.query.gameid])
     .then(function (teaminfo) {
         db.any(`SELECT * FROM games WHERE gameID = $1`, [req.query.gameid])
-    
-        .then(function (rows) {
+        .then(function (game) {
             db.any(`SELECT sportname FROM sports WHERE sportid = (SELECT sportid FROM teamsToSports WHERE teamid = ${teaminfo[0].teamid} LIMIT 1);`)
             .then(function(sportname) {
-                return res.render('./pages/game', {rows, user, teaminfo, sportname})
+                return res.render('./pages/game', {game, user, teaminfo, sportname})
+
             })
             .catch((err) => {
                 return console.log(err);
