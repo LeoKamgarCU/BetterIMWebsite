@@ -8,37 +8,41 @@
       <div class="container p-4">
         <!-- THE REST OF YOUR HTML CODE GOES HERE -->
         <h1>Discover teams</h1>
-        <%teams.forEach(function(team, index){ let hrefName= ""; if((index%2)==0){%>
+        <%teams.forEach(function(team, index){ 
+          let hrefName = "";
+          if((index%2) ==0){%>
           <div class="row p-2">
             <%}%>
               <div class="col sm-6">
                 <div class="card bg-dark text-white h-100">
                   <div class="card-body d-flex flex-column">
+                    <img class="card-img-top" object-fit="cover" src="" alt="Card image">
                     <div class="container mt-auto">
                       <h5 class="card-title">
                         <%=team.teamname%>
                       </h5>
-                      <p class="card-text">Number of teams:
-                        <!-- Use teamsToSports db table -->
+                      
+                      <p class="card-text">Number of players:
+                        <!-- Use teamsToplayers db table -->
                       </p>
                     </div>
 
-                    <a href=<%=hrefName %> class="btn btn-primary mt-auto">Join Team</a>
+                    <a href= <%= hrefName %>  class="btn btn-primary mt-auto">Join Team</a>
                     <!-- Button should redirect to a page with a list of teams -->
                   </div>
                 </div>
               </div>
-
-         <% if(index == teams.length-1 && index%2 == 0){%>
-            <div class="col sm-6">
-            </div>
+              <%if(index%2) != 0){%>
           </div>
           <%}
-           if(index%2 != 0){%>
+          if((index%2) != 0) && index == teams.length - 1){%>
+            <div class="col sm-6">
+
+            </div>
           </div>
-          <%} 
-          
-        })%>
+          <%}%>
+
+          <%})%>
 
 
 

@@ -116,7 +116,7 @@ app.post("/edit_profile", (req, res) => {
 
 app.get("/logout", (req, res) => {
     req.session.destroy();
-    return res.render("pages/login");
+    return res.render("pages/login", {error: false, message: 'Successfully logged out.'});
 });
 
 app.post('/login', async (req, res) => {
@@ -126,10 +126,8 @@ app.post('/login', async (req, res) => {
             const match = await bcrypt.compare(req.body.password, user.password);
             if (!match) {
                 console.log("Incorrect username or password");
-                res.render("/login",{
-                    message: "Incorrect username or password",
-                    error: 1
-                });
+                return res.render('./pages/login', {error: true, message: 'Incorrect username or password.'});
+
             } else {
                 req.session.user = user;
                 req.session.save();
@@ -138,12 +136,15 @@ app.post('/login', async (req, res) => {
         })
         .catch((err) => {
             console.log(err);
-            res.redirect('/login');
+            return res.render('./pages/login', {error: true, message: 'No account is associated with that username.'});
         });
 });
 
 
 app.post("/register", async (req, res) => {
+    if(req.body.password !== req.body.confirmPassword) {
+        return res.render('./pages/login', {error: true, message: 'Failed to register, passwords did not match. Try again.'});
+    }
     const hash = await bcrypt.hash(req.body.password, 10);
     const tempProfilePhoto = '';
     const classYear = /\d/.test(req.body.classYear) ? req.body.classYear : '0';
@@ -152,18 +153,93 @@ app.post("/register", async (req, res) => {
     const insertQuery = 'INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate) VALUES ($1, $2, $3, $4, $5, $6);';
     db.any(insertQuery, [req.body.username, req.body.playername, hash, classYear, tempProfilePhoto, joinDate])
         .then(() => {
-            res.redirect("/login");
+            return res.render('./pages/login', {error: false, message: 'Successfully registered new account.'});
         })
         .catch((err) => {
             console.log(err);
-            res.render("pages/login",{
-                message: "Username Already Taken",
+            res.render("./pages/login",{
+                message: "Failed to register, that username is already taken. Try another one.",
                 error: 1
             });
         });
 });
 
+
+
+app.get("/games", (req, res) => {
+    const query = `INSERT INTO teamsToPlayers (playerID, teamID) VALUES (1, 1); SELECT * FROM games WHERE gameid IN (SELECT gameid FROM teamsToGames WHERE teamsToGames.teamID IN (SELECT teamid FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid}));`;
+  
+    db.any(query)
+      .then((games) => {
+        res.render("./pages/games", {
+          games,
+        });
+      })
+      .catch((err) => {
+        res.render("./pages/games", {
+          games: [],
+          error: true,
+          message: err.message,
+        });
+      });
+  });
+  
+
+
+  app.get("/allGames", (req, res) => {
+    const query = `SELECT * FROM games;`;
+  
+    db.any(query)
+      .then((games) => {
+        res.render("./pages/allGames", {
+          games,
+        });
+      })
+      .catch((err) => {
+        res.render("./pages/allGames", {
+          games: [],
+          error: true,
+          message: err.message,
+        });
+      });
+  });
+  
+
+
+
+
+app.get("/game", (req, res) => {
+    const user = req.session.user;
+    db.any(`SELECT teamname, teamid FROM teams WHERE teamid IN(SELECT teamid FROM teamsToGames WHERE gameID = $1 LIMIT 2);`, [req.query.gameid])
+    .then(function (teaminfo) {
+        db.any(`SELECT * FROM games WHERE gameID = $1`, [req.query.gameid])
+    
+        .then(function (rows) {
+            db.any(`SELECT sportname FROM sports WHERE sportid = (SELECT sportid FROM teamsToSports WHERE teamid = ${teaminfo[0].teamid} LIMIT 1);`)
+            .then(function(sportname) {
+                return res.render('./pages/game', {rows, user, teaminfo, sportname})
+            })
+            .catch((err) => {
+                return console.log(err);
+            });
+          })
+        .catch((err) => {
+            return console.log(err);
+        });
+      })
+    .catch((err) => {
+        return console.log(err);
+    });
+  });
+
+
 // End Routing
+
+
+app.use((req, res, next) => {
+    res.status(404).send(
+        '<h1>404</h1><h4>page not found</h4>')
+})
 
 app.listen(3000);
 console.log('Server is listening on port 3000');

@@ -8,9 +8,7 @@
       <div class="container p-4">
         <!-- THE REST OF YOUR HTML CODE GOES HERE -->
         <h1>Discover sports</h1>
-        <%sports.forEach(function(sport, index){ 
-          let hrefName = "/teams/"+sport.sportname;
-          if((index%2) ==0){%>
+        <%sports.forEach(function(sport, index){ let hrefName="/teams/" +sport.sportname; if((index%2)==0){%>
           <div class="row p-2">
             <%}%>
               <div class="col sm-6">
@@ -29,16 +27,22 @@
                       </p>
                     </div>
 
-                    <a href= <%= hrefName %>  class="btn btn-primary mt-auto">Join/Create Team</a>
+                    <a href=<%=hrefName %> class="btn btn-primary mt-auto">Join/Create Team</a>
                     <!-- Button should redirect to a page with a list of teams -->
                   </div>
                 </div>
               </div>
-              <%if((index%2) != 0){%>
-          </div>
-          <%}%>
 
-          <%})%>
+         <% if(index == sports.length-1 && index%2 == 0){%>
+            <div class="col sm-6">
+            </div>
+          </div>
+          <%}
+           if(index%2 != 0){%>
+          </div>
+          <%} 
+          
+        })%>
 
 
 
