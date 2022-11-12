@@ -32,17 +32,16 @@
                   </div>
                 </div>
               </div>
-              <%if(index%2) != 0){%>
-          </div>
-          <%}
-          if((index%2) != 0) && index == teams.length - 1){%>
-            <div class="col sm-6">
-
-            </div>
-          </div>
-          <%}%>
-
-          <%})%>
+              <% if(index == sports.length-1 && index%2 == 0){%>
+                <div class="col sm-6">
+                </div>
+              </div>
+              <%}
+               if(index%2 != 0){%>
+              </div>
+              <%} 
+              
+            })%>
 
 
 
