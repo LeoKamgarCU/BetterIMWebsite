@@ -7,8 +7,10 @@
       </div>
       <div class="container p-4">
         <!-- THE REST OF YOUR HTML CODE GOES HERE -->
-        <h1>Discover sports</h1>
-        <%sports.forEach(function(sport, index){ let hrefName="/teams/" +sport.sportname; if((index%2)==0){%>
+        <h1>Discover teams</h1>
+        <%teams.forEach(function(team, index){ 
+          let hrefName = "";
+          if((index%2) ==0){%>
           <div class="row p-2">
             <%}%>
               <div class="col sm-6">
@@ -17,32 +19,30 @@
                     <img class="card-img-top" object-fit="cover" src="" alt="Card image">
                     <div class="container mt-auto">
                       <h5 class="card-title">
-                        <%=sport.sportname%>
+                        <%=team.teamname%>
                       </h5>
-                      <p class="card-text">Description:
-                        <!-- Maybe add description to sports db? eg. sport.description -->
-                      </p>
-                      <p class="card-text">Number of teams:
-                        <!-- Use teamsToSports db table -->
+                      
+                      <p class="card-text">Number of players:
+                        <!-- Use teamsToplayers db table -->
                       </p>
                     </div>
 
-                    <a href=<%=hrefName %> class="btn btn-primary mt-auto">Join/Create Team</a>
+                    <a href= <%= hrefName %>  class="btn btn-primary mt-auto">Join Team</a>
                     <!-- Button should redirect to a page with a list of teams -->
                   </div>
                 </div>
               </div>
-
-         <% if(index == sports.length-1 && index%2 == 0){%>
-            <div class="col sm-6">
-            </div>
+              <%if(index%2) != 0){%>
           </div>
           <%}
-           if(index%2 != 0){%>
+          if((index%2) != 0) && index == teams.length - 1){%>
+            <div class="col sm-6">
+
+            </div>
           </div>
-          <%} 
-          
-        })%>
+          <%}%>
+
+          <%})%>
 
 
 
