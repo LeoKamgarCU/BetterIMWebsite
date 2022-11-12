@@ -90,7 +90,20 @@ app.get("/profile", (req, res) => {
 
 app.get("/edit_profile", (req, res) => {
     return res.render("pages/edit_profile", { user : req.session.user });
-})
+});
+
+app.get("/teams/:sportName", (req, res) => {
+    const sportName = req.params.sportName;
+    const query = 'SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToSports WHERE sportID = (SELECT sportID FROM sports WHERE sportName = $1));';
+    db.any(query, [sportName])
+        .then((teams) => {
+            return res.render("pages/teams", { teams: teams, sports: [('Basketball'), ('Volleyball'), ('Baseball'), ('Soccer'), ('Football')]});
+        })
+        .catch((err) => {
+            console.log(err);
+            return res.render("pages/sports", { message: "Error Occured In Team Query", error: 1})
+        });
+});
 
 app.post("/edit_profile", (req, res) => {
     console.log(req.session.user);

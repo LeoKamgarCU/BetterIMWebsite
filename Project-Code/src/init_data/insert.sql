@@ -5,6 +5,9 @@ INSERT INTO sports (sportName) VALUES
 ('Soccer'),
 ('Football');
 
+-- Default user: Username: user1, Password: asdf
+INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate) VALUES ('user1', 'leo', '$2b$10$pSWjpntEzHInJozarXe4Z..5GM5QeUE/z3OEfK3NHdDS4tjPSj4Yu', 2022, '', '2022-11-11');
+
 -- INSERT INTO players (username, playerName, password, classYear) VALUES ('a', 'Joe Joe', 'p', 2023);
 INSERT INTO teams (teamName) VALUES ('team1');
 INSERT INTO teams (teamName) VALUES ('team2');
