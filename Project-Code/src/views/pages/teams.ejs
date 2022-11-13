@@ -7,9 +7,30 @@
       </div>
       <div class="container text-center p-4">
         <!-- THE REST OF YOUR HTML CODE GOES HERE -->
-          <form action="/team/create" method="post" >
-            <button class="btn btn-primary mt-auto" style="position: absolute;right: 100px;top:110px" >Create Team</button>
-          </form>
+          
+        <button class="btn btn-primary mt-auto" style="position: absolute;right: 100px;top:110px" data-bs-toggle="modal" data-bs-target="#CreateModal">Create Team</button>
+        <form action="/team/create" method="POST">
+          <div class="modal fade" id="CreateModal" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header text-center">
+                <h1 class="modal-title fs-3">Create Team</h1>
+                <button type="reset" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="teamName" id="teamName" placeholder="Team name" required>
+                  </div>
+        
+                </div>
+                <div class="modal-footer">
+                  <button type="reset" class="btn rounded-pill" style="background-color:#dedee3; color:#9c9cac" data-bs-dismiss="modal">Close</button>
+                  <button type="submit" class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475">Create Team</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
 
         <h1 style="padding-top:2vh; padding-bottom:2vh">Discover Teams</h1>
 
