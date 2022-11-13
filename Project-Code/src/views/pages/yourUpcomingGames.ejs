@@ -1,16 +1,10 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
 
-
-
-
-
-
-
-
 <main>
-    <div class="container text-center">
+    <div class="container text-center" style="padding-bottom:10vh">
         <h1 style="padding-top:2vh; padding-bottom:2vh">Your upcoming games</h1>
+        <h4 style="color:#949494"> Upcoming games that your team(s) are playing in. </h4>
         <h6 style="color:#949494">Click a date below to view the game details</h6>
         <h8 style="color:#949494">If there are no games, then all games in the database have passed.</h8>
 
@@ -19,31 +13,18 @@
             <a href="allGames" class="btn rounded-pill" style="background-color:#1e90ff; color:#ffffff">All games</a>
         </div>
 
-
-           
-        <!-- <table class="table"> -->
-            <!-- <tbody> -->
               <% if(locals.error || teams.length == 0) {  %>
                 <h4 style="padding-top:5vh;color:#ff8a8a">You have not joined any teams yet. <br>Join teams by going to the sports page.</h4>
                 <% } else if(games.length == 0) { %>
                 <h4 style="padding-top:5vh;color:#17d475">You have no upcoming games</h4>
 
                 <% var today = new Date()%>
-                
-
-                <!-- year less -> invalid
-                year same, month less-> invalid
-                year same, month same, day less -> invalid
-                all other cases->valid -->
-
-
+  
                 <% } else { %>
+                  <% var today = new Date()%>
 
                 <% games.forEach(function(game){ %>
 
-
-                    
-                 
                      <% if(!((game.gamedate.getFullYear() < today.getFullYear()) || ((game.gamedate.getFullYear() == today.getFullYear()) && (game.gamedate.getMonth()<today.getMonth()))  ||   ((game.gamedate.getFullYear() == today.getFullYear()) && (game.gamedate.getMonth()==today.getMonth()) &&(game.gamedate.getDate()<today.getDate())))) {%>
 
 
@@ -60,50 +41,8 @@
 
               <% } %>
 
-
-                            
-
-                            
-                        
-
-
-
-
                 <% }); %>
                 <% } %>
-
-
-               
-
-
-
-                
-                
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-             
-
-
-
-
-
-
-
-
-
 
             
     </div>
