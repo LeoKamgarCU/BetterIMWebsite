@@ -97,6 +97,7 @@ app.get("/teams/:sportName", (req, res) => {
     const query = 'SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToSports WHERE sportID = (SELECT sportID FROM sports WHERE sportName = $1));';
     db.any(query, [sportName])
         .then((teams) => {
+            console.log(teams)
             return res.render("pages/teams", { teams: teams, sports: [('Basketball'), ('Volleyball'), ('Baseball'), ('Soccer'), ('Football')]});
         })
         .catch((err) => {
