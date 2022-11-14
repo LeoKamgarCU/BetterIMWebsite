@@ -37,7 +37,8 @@ CREATE TABLE games (
 
 CREATE TABLE sports (
     sportID SERIAL PRIMARY KEY NOT NULL,
-    sportName VARCHAR(100) NOT NULL
+    sportName VARCHAR(100) NOT NULL,
+    sportDesc VARCHAR(500) NOT NULL
 );
 
 CREATE TABLE teamsToSports (

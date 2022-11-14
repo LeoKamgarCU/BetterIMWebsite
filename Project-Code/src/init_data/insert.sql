@@ -1,9 +1,10 @@
--- 5 sports
-INSERT INTO sports (sportName) VALUES ('Basketball');
-INSERT INTO sports (sportName) VALUES ('Volleyball');
-INSERT INTO sports (sportName) VALUES ('Baseball');
-INSERT INTO sports (sportName) VALUES ('Soccer');
-INSERT INTO sports (sportName) VALUES ('Football');
+-- 6 sports
+INSERT INTO sports (sportName, sportDesc) VALUES ('Basketball','Players attempt to shoot the ball through the hoop on the opponent''s court, moving the ball by throwing and dribbling.');
+INSERT INTO sports (sportName, sportDesc) VALUES ('Volleyball','A game for two teams of six players, in which a large ball is hit by hand over a high net, the aim being to score points by making the ball reach the ground on the opponent''s side of the court.');
+INSERT INTO sports (sportName, sportDesc) VALUES ('Baseball','A bat and ball game in which the aim is to hit the ball and score runs by running around four bases.');
+INSERT INTO sports (sportName, sportDesc) VALUES ('Soccer','Played between two teams of eleven players with a spherical ball. The game is played on a rectangular field with a goal at each end. The object is to score by using any part of the body except the arms and hands to get the ball into the opposing goal.');
+INSERT INTO sports (sportName, sportDesc) VALUES ('Football','A team sport played on a rectangular field with goalposts at each end. Each team attempts to advance an oval ball down the field into the end zone by running or passing it.');
+INSERT INTO sports (sportName, sportDesc) VALUES ('3x3 Basketball', 'A variation of basketball played on a half-court with just three players on each team.');
 
 -- All passwords are asdf. 40 users
 INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate) VALUES ('leka5026', 'leo', '$2b$10$pSWjpntEzHInJozarXe4Z..5GM5QeUE/z3OEfK3NHdDS4tjPSj4Yu', 2025, '', '2022-11-11');

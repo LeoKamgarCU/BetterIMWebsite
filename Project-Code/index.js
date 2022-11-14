@@ -72,9 +72,20 @@ app.get("/sports", (req, res) => {
   db.any(all_sports)
     .then((sports) => {
       console.log(sports)
-      res.render("./pages/sports", {
-        sports
-      });
+      db.any(`SELECT * FROM teamsToSports;`)
+        .then((teamsToSports) => {
+          console.log(teamsToSports)
+          res.render("./pages/sports", {
+            sports,
+            teamsToSports
+          });
+        })
+        .catch((err) => {
+          res.render("./pages/home", {
+            error: true,
+            message: "No sports found in database."
+          });
+        });
     })
     .catch((err) => {
       res.render("./pages/home", {
