@@ -106,11 +106,30 @@ app.get("/teams/:sportName", (req, res) => {
     });
 });
 
+app.get("/team/view/:teamID", (req, res) => {
+  db.one("SELECT * FROM teams WHERE teamID=$1", [req.params.teamID])
+      .then((team) => {
+        return res.render("pages/team", { team: team })
+      })
+      .catch((err) => {
+        return res.render("pages/sports", { message: "Team does not exist", error: 1 })
+      })
+})
+
+
 app.post("/team/join", (req, res) => {
   const query = `INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);`
   db.any(query, [req.session.user.playerid, req.body.teamid])
     .then(() => {
-      return res.render('./pages/team', { error: false, message: 'Successfully joined team.' });
+      db.one("SELECT * FROM teams WHERE teamID=$1",[req.body.teamid])
+          .then((team) => {
+            console.log("team:" + team.teamname);
+            return res.render(`./pages/team`, {  team: team, error: false, message: 'Successfully joined team.' });
+          })
+          .catch((err) => {
+            console.log(err);
+            return res.render(`./pages/sports`, {  error: true, message: 'Unable to find team.' });
+          });
     })
     .catch((err) => {
       console.log(err);
@@ -126,7 +145,14 @@ app.post("/team/create", (req, res) => {
       db.any(`INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);
         INSERT INTO teamsToCaptains (playerID, teamID) VALUES ($1, $2)`, [req.session.user.playerid, teamID[0].teamid])
         .then(() => {
-          return res.render('./pages/team', { error: false, message: 'Successfully created team.' });
+            db.one("SELECT * FROM teams WHERE teamID=$1",[teamID[0].teamid])
+                .then((team) => {
+                    return res.render(`./pages/team`, {  team: team, error: false, message: 'Successfully created team.' });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    return res.render(`./pages/sports`, {  error: true, message: 'Unable to find team.' });
+                });
         })
         .catch((err) => {
           console.log(err);
