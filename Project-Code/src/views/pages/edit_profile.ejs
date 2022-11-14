@@ -4,6 +4,7 @@
 <main>
     <div class="container">
         <h3> Your Profile </h3>
+
         <form action="/edit_profile" method="POST">
             <input type="hidden" name="playerid" value="<%= user.playerID %>">
 
@@ -13,13 +14,31 @@
             <label class="form-label"> Name </label>
             <input type="text" class="form-control" name="playername" value="<%= user.playername %>"> <br>
 
-            <label class="form-label"> Class year </label>
-            <input type="text" class="form-control" name="classyear" value="<%= user.classyear %>"> <br>
+            <label class="form-label" for="classyear">Class of</label>
+            <select class="form-select" name="classyear" id="classyear" onload="" required>
+                <option value=""></option>
+                <option value="2023" id="2023">2023</option>
+                <option value="2024" id="2024">2024</option>
+                <option value="2025" id="2025">2025</option>
+                <option value="2026" id="2026">2026</option>
+                <option value="Other/NA">Other/NA</option>
+            </select>
 
             <a href="/change_password">Change password</a><br>
 
             <input type="submit" value="Save changes">
         </form>
+
+        <script type="text/javascript">
+            var select = document.getElementById("classyear");
+            for (var i=0; i < select.options.length; i++) {
+                var option = select.options[i];
+                if (option.value === "<%= user.classyear %>") {
+                    console.log("working?");
+                    option.setAttribute("selected", true);
+                }
+            }
+        </script>
     </div>
 </main>
 
