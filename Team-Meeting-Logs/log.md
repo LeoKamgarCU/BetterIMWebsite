@@ -23,4 +23,10 @@ Meeting 2:
 
 
 Meeting 3:
+- Went over previous plans and next plan
+- Demoed project
+- Find a way to display all game data on one page
+- Probably don't need a FAQ page
+- Probably don't need a messages page, because teammates will have eachother's phone numbers already.
+
 Meeting 4:
