@@ -56,6 +56,9 @@ The website will use a database to store the various leagues, teams, games, and 
 Vision Statement:   
 For college kids and anyone else who needs an easy way to manage their intramural, club, or recreational athletic teams. IMProved is a web app that offers a simple, fast, and intuitive way to explore, join, and create teams. Unlike IMLeagues.com, our product is not full of ads and confusing, buggy multi-step interfaces.   
 
+Development Methodology:  
+We will use an Agile Methodology while developing this project because the timeline is only 4 weeks.
+
 Communication Plan:  
 We will be using primarily Discord for communication with each other. As needed, we may also utilize additional methods including a text group chat, google docs, and email.  
 
