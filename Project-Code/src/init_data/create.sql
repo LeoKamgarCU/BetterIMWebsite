@@ -4,7 +4,7 @@ CREATE TABLE players (
     playerName VARCHAR(100) NOT NULL,
     password VARCHAR(100) NOT NULL,
     classYear SMALLINT NOT NULL,
-    profilePhoto VARCHAR(100) NOT NULL,
+    profilePhoto TEXT NOT NULL,
     joinDate DATE NOT NULL
 );
 

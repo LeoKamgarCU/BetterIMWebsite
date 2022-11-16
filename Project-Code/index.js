@@ -5,6 +5,7 @@ const pgp = require('pg-promise')();
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const e = require('express');
 
 // database configuration
 const dbConfig = {
@@ -57,6 +58,35 @@ app.get("/login", (req, res) => {
   return res.render('./pages/login');
 });
 
+app.post("/register", async (req, res) => {
+  if (req.body.password !== req.body.confirmPassword) {
+    return res.render('./pages/login', { error: true, message: 'Failed to register, passwords did not match. Try again.' });
+  }
+  const hash = await bcrypt.hash(req.body.password, 10);
+  
+  var userPhotoLink = 'https://img.freepik.com/free-photo/blue-user-icon-symbol-website-admin-social-login-element-concept-white-background-3d-rendering_56104-1217.jpg';
+  if(req.body.profilePhotoLink.length != 0) {
+    userPhotoLink = req.body.profilePhotoLink;
+  }
+
+
+  const classYear = /\d/.test(req.body.classYear) ? req.body.classYear : '0';
+  const date = new Date();
+  const joinDate = date.toISOString().split('T')[0];
+  const insertQuery = 'INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate) VALUES ($1, $2, $3, $4, $5, $6);';
+  db.any(insertQuery, [req.body.username, req.body.playername, hash, classYear, userPhotoLink, joinDate])
+    .then(() => {
+      return res.render('./pages/login', { error: false, message: 'Successfully registered new account.' });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.render("./pages/login", {
+        message: "Failed to register, that username is already taken. Try another one.",
+        error: 1
+      });
+    });
+});
+
 
 
 app.get("/about", (req, res) => {
@@ -96,7 +126,9 @@ app.get("/sports", (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
-  return res.render("pages/profile", { user: req.session.user });
+ 
+
+  return res.render("./pages/profile", { user: req.session.user });
 });
 
 app.get("/edit_profile", (req, res) => {
@@ -178,8 +210,8 @@ app.post("/team/create", (req, res) => {
 
 app.post("/edit_profile", (req, res) => {
   console.log(req.session.user);
-  db.one("UPDATE players SET username = $1, playerName = $2, classYear = $3 WHERE playerID = $4 RETURNING playerID;",
-    [req.body.username, req.body.playername, req.body.classyear, req.session.user.playerid])
+  db.one("UPDATE players SET username = $1, playerName = $2, classYear = $3, profilePhoto = $4 WHERE playerID = $5 RETURNING playerID;",
+    [req.body.username, req.body.playername, req.body.classyear, req.body.profilephotolink, req.session.user.playerid])
     .then((playerID) => {
       db.one("SELECT * FROM players WHERE playerID = $1", [playerID.playerid])
         .then((user) => {
@@ -225,37 +257,12 @@ app.post('/login', async (req, res) => {
 });
 
 
-app.post("/register", async (req, res) => {
-  if (req.body.password !== req.body.confirmPassword) {
-    return res.render('./pages/login', { error: true, message: 'Failed to register, passwords did not match. Try again.' });
-  }
-  const hash = await bcrypt.hash(req.body.password, 10);
-  const tempProfilePhoto = '';
-  const classYear = /\d/.test(req.body.classYear) ? req.body.classYear : '0';
-  const date = new Date();
-  const joinDate = date.toISOString().split('T')[0];
-  const insertQuery = 'INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate) VALUES ($1, $2, $3, $4, $5, $6);';
-  db.any(insertQuery, [req.body.username, req.body.playername, hash, classYear, tempProfilePhoto, joinDate])
-    .then(() => {
-      return res.render('./pages/login', { error: false, message: 'Successfully registered new account.' });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.render("./pages/login", {
-        message: "Failed to register, that username is already taken. Try another one.",
-        error: 1
-      });
-    });
-});
+
 
 
 
 app.get("/yourUpcomingGames", (req, res) => {
   const checkOnTeam = `SELECT * FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid};`;
-
-
-
-
   const query = `INSERT INTO teamsToPlayers VALUES (1,9); SELECT * FROM games WHERE gameid IN (SELECT gameid FROM teamsToGames WHERE teamsToGames.teamID IN (SELECT teamid FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid}));`;
 
   db.any(query)
@@ -268,9 +275,6 @@ app.get("/yourUpcomingGames", (req, res) => {
           console.log(err);
           res.render("./pages/yourUpcomingGames", { error: true });
         });
-
-
-
     })
     .catch((err) => {
       console.log(err);
@@ -280,21 +284,6 @@ app.get("/yourUpcomingGames", (req, res) => {
       });
     });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 app.get("/allUpcomingGames", (req, res) => {
   const query = `SELECT * FROM games ORDER BY gameDate DESC, time ASC;`;
@@ -333,22 +322,6 @@ app.get("/allGames", (req, res) => {
       });
     });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 app.get("/game", (req, res) => {
   const user = req.session.user;

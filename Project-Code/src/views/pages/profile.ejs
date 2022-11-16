@@ -2,9 +2,12 @@
 <%- include ('../partials/menu') %>
 
 <main>
-    <div class="container">
-        <h3> Your Profile  <a href="/edit_profile">[Edit]</a> </h3>
+    <div class="container text-center">
+        <h3 style="padding-top:2vh"> Your Profile  <a class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475"  href="/edit_profile">Edit</a> </h3>
+        <img src="<%= user.profilephoto %>" style="width:100px;height:100px;border-radius:50%;">
+
         <form action="/profile" method="POST">
+            <div style="width:30vh;padding-top: 5vh;" class="mx-auto">
             <label class="form-label"> Username </label>
             <input type="text" class="form-control" value="<%= user.username %>" disabled> <br>
 
@@ -14,9 +17,11 @@
             <label class="form-label"> Class year </label>
             <input type="text" class="form-control" value="<%= user.classyear %>" disabled> <br>
 
-            <a href="/change_password">Change password</a>
+            <a class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475" href="/change_password">Change password</a>
+        </div>
         </form>
     </div>
 </main>
 
 <%- include ('../partials/footer') %>
+
