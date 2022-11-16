@@ -106,15 +106,23 @@ app.get("/edit_profile", (req, res) => {
 app.get("/teams/:sportName", (req, res) => {
   const sportName = req.params.sportName;
   const query = 'SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToSports WHERE sportID = (SELECT sportID FROM sports WHERE sportName = $1));';
-  db.any(query, [sportName])
-    .then((teams) => {
-      console.log(teams)
-      return res.render("./pages/teams", { teams: teams, sports: [('Basketball'), ('Volleyball'), ('Baseball'), ('Soccer'), ('Football')] });
+  const sportIDQuery = 'SELECT sportID FROM sports WHERE sportName = $1;'
+  db.one(sportIDQuery, [sportName])
+    .then((sportID) => {
+      db.any(query, [sportName])
+        .then((teams) => {
+          console.log(teams)
+          console.log(sportID);
+          return res.render("./pages/teams", { teams: teams, sports: [('Basketball'), ('Volleyball'), ('Baseball'), ('Soccer'), ('Football')], sportID: sportID.sportid });
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.render("./pages/sports", { message: "Error Occured In Team Query", error: 1 })
+        });
     })
     .catch((err) => {
       console.log(err);
-      return res.render("./pages/sports", { message: "Error Occured In Team Query", error: 1 })
-    });
+    })
 });
 
 app.get("/team/view/:teamID", (req, res) => {
@@ -149,31 +157,41 @@ app.post("/team/join", (req, res) => {
 });
 
 app.post("/team/create", (req, res) => {
-  const query = `INSERT INTO teams (teamName) VALUES ($1) returning teamID;`
-  db.any(query, [req.body.teamName])
+  const sportID = req.body.sportID;
+  const teamInsertQuery = 'INSERT INTO teams (teamName) VALUES ($1) RETURNING teamID';
+  const sportQuery = 'SELECT * FROM sports;'
+  const teamRelationInsertQuery = 'INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);INSERT INTO teamsToCaptains (playerID, teamID) VALUES ($1, $2);INSERT INTO teamsToSports (teamID, sportID) VALUES ($2, $3);';
+  db.any(teamInsertQuery, [req.body.teamName])
     .then((teamID) => {
-      console.log(teamID[0].teamid)
-      db.any(`INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);
-        INSERT INTO teamsToCaptains (playerID, teamID) VALUES ($1, $2)`, [req.session.user.playerid, teamID[0].teamid])
-        .then(() => {
-            db.one("SELECT * FROM teams WHERE teamID=$1",[teamID[0].teamid])
-                .then((team) => {
-                    return res.render(`./pages/team`, {  team: team, error: false, message: 'Successfully created team.' });
-                })
-                .catch((err) => {
+        console.log([req.session.user.playerid, teamID[0].teamid, sportID]);
+        db.any(sportQuery)
+          .then((sports) => {
+            db.none(teamRelationInsertQuery, [req.session.user.playerid, teamID[0].teamid, sportID])
+              .then(() => {
+                db.one('SELECT * FROM teams where teamID = $1', [teamID[0].teamid])
+                  .then((team) => {
+                    console.log(team);
+                    return res.render("./pages/team", { team: team });
+                  })
+                  .catch((err) => {
                     console.log(err);
                     return res.render(`./pages/sports`, {  error: true, message: 'Unable to find team.' });
-                });
-        })
-        .catch((err) => {
-          console.log(err);
-          return res.render("./pages/teams", { error: true, message: 'Unable to create team.' });
-        });
-    })
-    .catch((err) => {
-      console.log(err);
-      return res.render("./pages/teams", { error: true, message: 'Unable to create team.' });
-    });
+                  })
+              })
+              .catch((err) => {
+                console.log(err);
+                return res.render(`./pages/sports`, {  error: true, message: 'Unable to add team relations' });
+              })
+          })
+          .catch((err) => {
+            console.log(err);
+            return res.render(`./pages/sports`, {  error: true, message: 'Unable to query sports' });
+          })
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.render("./pages/teams", { error: true, message: 'Unable to create team.' });
+      })
 });
 
 app.post("/edit_profile", (req, res) => {
