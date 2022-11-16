@@ -159,39 +159,29 @@ app.post("/team/join", (req, res) => {
 app.post("/team/create", (req, res) => {
   const sportID = req.body.sportID;
   const teamInsertQuery = 'INSERT INTO teams (teamName) VALUES ($1) RETURNING teamID';
-  const sportQuery = 'SELECT * FROM sports;'
   const teamRelationInsertQuery = 'INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);INSERT INTO teamsToCaptains (playerID, teamID) VALUES ($1, $2);INSERT INTO teamsToSports (teamID, sportID) VALUES ($2, $3);';
   db.any(teamInsertQuery, [req.body.teamName])
     .then((teamID) => {
-        console.log([req.session.user.playerid, teamID[0].teamid, sportID]);
-        db.any(sportQuery)
-          .then((sports) => {
-            db.none(teamRelationInsertQuery, [req.session.user.playerid, teamID[0].teamid, sportID])
-              .then(() => {
-                db.one('SELECT * FROM teams where teamID = $1', [teamID[0].teamid])
-                  .then((team) => {
-                    console.log(team);
-                    return res.render("./pages/team", { team: team });
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                    return res.render(`./pages/sports`, {  error: true, message: 'Unable to find team.' });
-                  })
-              })
-              .catch((err) => {
-                console.log(err);
-                return res.render(`./pages/sports`, {  error: true, message: 'Unable to add team relations' });
-              })
-          })
-          .catch((err) => {
-            console.log(err);
-            return res.render(`./pages/sports`, {  error: true, message: 'Unable to query sports' });
-          })
-      })
-      .catch((err) => {
-        console.log(err);
-        return res.render("./pages/teams", { error: true, message: 'Unable to create team.' });
-      })
+      db.none(teamRelationInsertQuery, [req.session.user.playerid, teamID[0].teamid, sportID])
+        .then(() => {
+          db.one('SELECT * FROM teams where teamID = $1', [teamID[0].teamid])
+            .then((team) => {
+              return res.render("./pages/team", { team: team });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res.render(`./pages/sports`, {  error: true, message: 'Unable to find team.' });
+            })
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.render(`./pages/sports`, {  error: true, message: 'Unable to add team relations' });
+        })
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.render("./pages/teams", { error: true, message: 'Unable to create team.' });
+    })
 });
 
 app.post("/edit_profile", (req, res) => {
