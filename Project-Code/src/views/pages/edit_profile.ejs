@@ -8,6 +8,8 @@
         <form action="/edit_profile" method="POST">
             <input type="hidden" name="playerid" value="<%= user.playerID %>">
 
+            
+
             <label class="form-label"> Username </label>
             <input type="text" class="form-control" name="username" value="<%= user.username %>"> <br>
 
@@ -22,7 +24,10 @@
                 <option value="2025" id="2025">2025</option>
                 <option value="2026" id="2026">2026</option>
                 <option value="Other/NA">Other/NA</option>
-            </select>
+            </select> <br>
+
+            <label class="form-label"> Profile Photo </label>
+            <input type="text" class="form-control" name="profilephotolink" value="<%= user.profilephoto %>"> <br>
 
             <a href="/change_password">Change password</a><br>
 
