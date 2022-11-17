@@ -58,6 +58,27 @@ app.get("/login", (req, res) => {
   return res.render('./pages/login');
 });
 
+app.post('/login', async (req, res) => {
+  const query = "Select * FROM players WHERE username = $1;";
+  db.one(query, [req.body.username])
+    .then(async (user) => {
+      const match = await bcrypt.compare(req.body.password, user.password);
+      if (!match) {
+        console.log("Incorrect username or password");
+        return res.render('./pages/login', { error: true, message: 'Incorrect username or password.' });
+
+      } else {
+        req.session.user = user;
+        req.session.save();
+        res.redirect('/profile');
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.render('./pages/login', { error: true, message: 'No account is associated with that username.' });
+    });
+});
+
 app.post("/register", async (req, res) => {
   if (req.body.password !== req.body.confirmPassword) {
     return res.render('./pages/login', { error: true, message: 'Failed to register, passwords did not match. Try again.' });
@@ -89,9 +110,30 @@ app.post("/register", async (req, res) => {
 
 
 
+
+
+
+
+
+
+
+// Authentication Middleware.
+const auth = (req, res, next) => {
+  if (!req.session.user) {
+    // Default to register page.
+    return res.redirect('/login');
+  }
+  next();
+};
+
+// Authentication Required
+app.use(auth);
+
+
 app.get("/about", (req, res) => {
   return res.render("./partials/about");
 });
+
 
 app.get("/sports", (req, res) => {
   const all_sports = `
@@ -243,26 +285,7 @@ app.get("/logout", (req, res) => {
   return res.render("pages/login", { error: false, message: 'Successfully logged out.' });
 });
 
-app.post('/login', async (req, res) => {
-  const query = "Select * FROM players WHERE username = $1;";
-  db.one(query, [req.body.username])
-    .then(async (user) => {
-      const match = await bcrypt.compare(req.body.password, user.password);
-      if (!match) {
-        console.log("Incorrect username or password");
-        return res.render('./pages/login', { error: true, message: 'Incorrect username or password.' });
 
-      } else {
-        req.session.user = user;
-        req.session.save();
-        res.redirect('/profile');
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      return res.render('./pages/login', { error: true, message: 'No account is associated with that username.' });
-    });
-});
 
 
 
