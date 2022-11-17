@@ -170,7 +170,7 @@ app.get("/profile", (req, res) => {
 });
 
 app.get("/edit_profile", (req, res) => {
-  return res.render("pages/edit_profile", { user: req.session.user });
+  return res.render("./pages/edit_profile", { user: req.session.user });
 });
 
 app.get("/teams/:sportName", (req, res) => {
@@ -206,12 +206,14 @@ app.get("/teams/:sportName", (req, res) => {
 
 app.get("/team/view/:teamID", (req, res) => {
   db.one("SELECT * FROM teams WHERE teamID=$1", [req.params.teamID])
-    .then((team) => {
-      return res.render("pages/team", { team: team })
-    })
-    .catch((err) => {
-      return res.render("pages/sports", { message: "Team does not exist", error: 1 })
-    })
+
+      .then((team) => {
+        return res.render("./pages/team", { team: team })
+      })
+      .catch((err) => {
+        return res.render("./pages/sports", { message: "Team does not exist", error: 1 })
+      })
+
 })
 
 
@@ -272,11 +274,11 @@ app.post("/edit_profile", (req, res) => {
         .then((user) => {
           req.session.user = user;
           req.session.save();
-          return res.render("pages/profile", { user: req.session.user });
+          return res.render("./pages/profile", { user: req.session.user });
         })
         .catch((err) => {
           console.log(err);
-          return res.render("pages/edit_profile", { user: req.session.user });
+          return res.render("./pages/edit_profile", { user: req.session.user });
         })
     })
     .catch((err) => {
