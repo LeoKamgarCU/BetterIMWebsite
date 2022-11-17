@@ -35,29 +35,53 @@
 
         <h1 style="padding-top:2vh; padding-bottom:2vh">Discover Teams</h1>
 
-        <%teams.forEach(function(team, index){ if((index%2)==0){%>
+        <%teams.forEach(function(team, index){ 
+          let count = 0;
+          teamsToPlayers.forEach(function(t2p){
+            if(t2p.teamid == team.teamid){
+              count ++;
+            }
+          })
+          let captainID = 0;
+          teamsToCaptains.forEach(function(t2f){
+            if(t2f.teamid == team.teamid){
+              captainID = t2f.playerid
+
+            }
+          })
+          let captainName = ''
+          playerNames.forEach(function(playerName){
+            if(playerName.playerid == captainID){
+              captainName = playerName.playername
+
+            }
+          })
+          
+          if((index%2)==0){%>
           <div class="row p-2">
             <%}%>
               <div class="col sm-6">
-                <div class="card bg-dark text-white h-100">
+                <div class="card bg-light h-100">
+                  <div class="card-header"><h5><%=team.teamname%></h5></div>
                   <div class="card-body d-flex flex-column">
                     <div class="container mt-auto">
-                      <h5 class="card-title">
-                        <%=team.teamname%>
-                      </h5>
-
-                      <p class="card-text">Number of players:
+                      <p class="card-text">Captain: <%=captainName%>
                         <!-- Use teamsToplayers db table -->
+                      </p>
+                      <p class="card-text">Number of players: <%=count%>
+                        <!-- Use teamsToplayers db table -->
+                      </p>
+                      <p class="card-text">
                       </p>
                     </div>
                     <form action="/team/join" method="post">
-                      <button class="btn btn-primary mt-auto" name="teamid" value=<%=team.teamid%> >Join Team</button>
+                      <button class="btn btn-outline-primary mt-auto" name="teamid" value=<%=team.teamid%> >Join Team</button>
                     </form>
                     <!-- Button should redirect to a page with a list of teams -->
                   </div>
                 </div>
               </div>
-              <% if(index==sports.length-1 && index%2==0){%>
+              <% if(index==teams.length-1 && index%2==0){%>
                 <div class="col sm-6">
                 </div>
           </div>

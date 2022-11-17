@@ -84,9 +84,9 @@ app.post("/register", async (req, res) => {
     return res.render('./pages/login', { error: true, message: 'Failed to register, passwords did not match. Try again.' });
   }
   const hash = await bcrypt.hash(req.body.password, 10);
-  
+
   var userPhotoLink = 'https://img.freepik.com/free-photo/blue-user-icon-symbol-website-admin-social-login-element-concept-white-background-3d-rendering_56104-1217.jpg';
-  if(req.body.profilePhotoLink.length != 0) {
+  if (req.body.profilePhotoLink.length != 0) {
     userPhotoLink = req.body.profilePhotoLink;
   }
 
@@ -136,11 +136,7 @@ app.get("/about", (req, res) => {
 
 
 app.get("/sports", (req, res) => {
-  const all_sports = `
-  SELECT *
-  FROM
-    sports
-  ORDER BY sportName ASC;`;
+  const all_sports = `SELECT * FROM sports ORDER BY sportName ASC;`;
   db.any(all_sports)
     .then((sports) => {
       console.log(sports)
@@ -168,7 +164,7 @@ app.get("/sports", (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
- 
+
 
   return res.render("./pages/profile", { user: req.session.user });
 });
@@ -179,34 +175,45 @@ app.get("/edit_profile", (req, res) => {
 
 app.get("/teams/:sportName", (req, res) => {
   const sportName = req.params.sportName;
-  const query = 'SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToSports WHERE sportID = (SELECT sportID FROM sports WHERE sportName = $1));';
-  const sportIDQuery = 'SELECT sportID FROM sports WHERE sportName = $1;'
-  db.one(sportIDQuery, [sportName])
-    .then((sportID) => {
-      db.any(query, [sportName])
-        .then((teams) => {
-          console.log(teams)
-          console.log(sportID);
-          return res.render("./pages/teams", { teams: teams, sports: [('Basketball'), ('Volleyball'), ('Baseball'), ('Soccer'), ('Football')], sportID: sportID.sportid });
-        })
-        .catch((err) => {
-          console.log(err);
-          return res.render("./pages/sports", { message: "Error Occured In Team Query", error: 1 })
-        });
+
+  db.tx(t => {
+    // creating a sequence of transaction queries:
+    const teams = t.any('SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToSports WHERE sportID = (SELECT sportID FROM sports WHERE sportName = $1));', [sportName]);
+    const sportID = t.one('SELECT sportID FROM sports WHERE sportName = $1;', [sportName])
+    const teamsToPlayers = db.any(`SELECT * FROM teamsToPlayers;`)
+    const teamsToCaptains = db.any(`SELECT * FROM teamsToCaptains`)
+    const playerName = db.any(`SELECT playerName,playerID  FROM players`)
+
+    // returning a promise that determines a successful transaction:
+    return t.batch([teams, sportID, teamsToPlayers, teamsToCaptains, playerName]); // all of the queries are to be resolved;
+  })
+    .then(data => {
+      // success, COMMIT was executed
+      return res.render("./pages/teams", {
+        teams: data[0],
+        sportID: data[1].sportid,
+        teamsToPlayers: data[2],
+        teamsToCaptains: data[3],
+        playerNames: data[4]
+      });
     })
-    .catch((err) => {
+    .catch(err => {
+      // failure, ROLLBACK was executed
       console.log(err);
-    })
+      return res.render("./pages/sports", { message: "Error Occured In Team Query", error: 1 })    
+    });
 });
 
 app.get("/team/view/:teamID", (req, res) => {
   db.one("SELECT * FROM teams WHERE teamID=$1", [req.params.teamID])
+
       .then((team) => {
         return res.render("./pages/team", { team: team })
       })
       .catch((err) => {
         return res.render("./pages/sports", { message: "Team does not exist", error: 1 })
       })
+
 })
 
 
@@ -214,15 +221,15 @@ app.post("/team/join", (req, res) => {
   const query = `INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);`
   db.any(query, [req.session.user.playerid, req.body.teamid])
     .then(() => {
-      db.one("SELECT * FROM teams WHERE teamID=$1",[req.body.teamid])
-          .then((team) => {
-            console.log("team:" + team.teamname);
-            return res.render(`./pages/team`, {  team: team, error: false, message: 'Successfully joined team.' });
-          })
-          .catch((err) => {
-            console.log(err);
-            return res.render(`./pages/sports`, {  error: true, message: 'Unable to find team.' });
-          });
+      db.one("SELECT * FROM teams WHERE teamID=$1", [req.body.teamid])
+        .then((team) => {
+          console.log("team:" + team.teamname);
+          return res.render(`./pages/team`, { team: team, error: false, message: 'Successfully joined team.' });
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.render(`./pages/sports`, { error: true, message: 'Unable to find team.' });
+        });
     })
     .catch((err) => {
       console.log(err);
@@ -244,12 +251,12 @@ app.post("/team/create", (req, res) => {
             })
             .catch((err) => {
               console.log(err);
-              return res.render(`./pages/sports`, {  error: true, message: 'Unable to find team.' });
+              return res.render(`./pages/sports`, { error: true, message: 'Unable to find team.' });
             })
         })
         .catch((err) => {
           console.log(err);
-          return res.render(`./pages/sports`, {  error: true, message: 'Unable to add team relations' });
+          return res.render(`./pages/sports`, { error: true, message: 'Unable to add team relations' });
         })
     })
     .catch((err) => {
