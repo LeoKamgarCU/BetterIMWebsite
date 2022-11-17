@@ -15,7 +15,9 @@
               count ++;
             }
           })
-          let hrefName="/teams/" +sport.sportname; if((index%2)==0){%>
+          const sportName = sport.sportname;
+          const alteredSportName = sportName.replace(' ', '%20');
+          let hrefName="/teams/" + alteredSportName; if((index%2)==0){%>
           <div class="row p-2">
             <%}%>
               <div class="col sm-6">
