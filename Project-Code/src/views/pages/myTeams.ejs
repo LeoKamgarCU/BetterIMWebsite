@@ -1,0 +1,38 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+
+<main>
+    <div class="container text-center">
+        <h1 style="padding-top:2vh"> My Teams </h1>
+
+        <% teams.forEach(function(team){ %>
+
+
+
+            
+           
+            <form action="/team" method="GET">
+                <input class="form-control" name="teamid" id="teamid" value="<%= team.teamid%>" type="hidden">
+                <div style="padding-top:3vh">
+                  <button style="background-color:#e8fcec; color:#17d475; " class="btn rounded-pill"  >
+                    <%= team.teamname  %> (ID: <%= team.teamid %>)
+                    
+                  </button>
+                </div>
+            </form>
+
+
+        <% }); %>
+
+
+
+
+    </div>
+
+
+
+</main>
+
+
+<%- include ('../partials/footer') %>
