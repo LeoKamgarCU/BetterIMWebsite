@@ -134,6 +134,10 @@ app.get("/about", (req, res) => {
   return res.render("./partials/about");
 });
 
+app.get("/faq", (req, res) => {
+    return res.render("./pages/faq");
+});
+
 
 app.get("/sports", (req, res) => {
   const all_sports = `SELECT * FROM sports ORDER BY sportName ASC;`;
