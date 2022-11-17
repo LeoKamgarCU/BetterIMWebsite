@@ -274,18 +274,20 @@ app.post("/edit_profile", (req, res) => {
         .then((user) => {
           req.session.user = user;
           req.session.save();
-          return res.render("./pages/profile", { user: req.session.user });
+          return res.render("pages/profile", { user: req.session.user});
         })
         .catch((err) => {
           console.log(err);
-          return res.render("./pages/edit_profile", { user: req.session.user });
+          return res.render("pages/edit_profile", { user: req.session.user });
         })
     })
     .catch((err) => {
       console.log(err);
-      return res.render("pages/edit_profile", { user: req.session.user });
+      return res.render("pages/edit_profile", { user: req.session.user, error: 1, message: 'That username is taken.' });
     });
 });
+
+
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
@@ -383,6 +385,21 @@ app.get("/game", (req, res) => {
     .catch((err) => {
       return console.log(err);
     });
+});
+
+app.get("/myTeams", (req, res) => {
+  db.any(`SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToPlayers WHERE playerID = ${req.session.user.playerid});`)
+  .then((teams) => {
+    return res.render("./pages/myTeams", {teams});
+
+  })
+  .catch((err) => {
+    return res.render("./pages/myTeams", {
+      teams: [],
+      error: true,
+      message: err.message,
+    });
+  });
 });
 
 
