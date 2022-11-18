@@ -266,24 +266,28 @@ app.post("/team/create", (req, res) => {
 });
 
 app.post("/edit_profile", (req, res) => {
+  var profilePhotoLink = req.body.profilephotolink;
+  if(!profilePhotoLink) {
+    profilePhotoLink = 'data:image/jpeg;base64,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';
+  }
   console.log(req.session.user);
   db.one("UPDATE players SET username = $1, playerName = $2, classYear = $3, profilePhoto = $4 WHERE playerID = $5 RETURNING playerID;",
-    [req.body.username, req.body.playername, req.body.classyear, req.body.profilephotolink, req.session.user.playerid])
+    [req.body.username, req.body.playername, req.body.classyear, profilePhotoLink, req.session.user.playerid])
     .then((playerID) => {
       db.one("SELECT * FROM players WHERE playerID = $1", [playerID.playerid])
         .then((user) => {
           req.session.user = user;
           req.session.save();
-          return res.render("pages/profile", { user: req.session.user});
+          return res.render("pages/profile", { user: req.session.user, error: false, message: 'Profile updated successfully.' });
         })
         .catch((err) => {
           console.log(err);
-          return res.render("pages/edit_profile", { user: req.session.user });
+          return res.render("pages/profile", { user: req.session.user });
         })
     })
     .catch((err) => {
       console.log(err);
-      return res.render("pages/edit_profile", { user: req.session.user, error: 1, message: 'That username is taken.' });
+      return res.render("pages/profile", { user: req.session.user, error: false, true: 'That username is taken.' });
     });
 });
 
@@ -492,6 +496,51 @@ app.get("/player", (req, res) => {
   });
 });
 
+
+app.get("/change_password", (req, res) => {
+  return res.render("./pages/change_password", { user: req.session.user });
+});
+
+app.post("/change_password", async (req, res) => {
+  const currentPassword = req.body.currentPassword;
+  const match = await bcrypt.compare(currentPassword, req.session.user.password);
+  if(!match) {
+    return res.render("./pages/change_password", {error: true, message: 'Incorrect current password.'})
+  }
+
+  if(req.body.newPassword !== req.body.confirmNewPassword) {
+    return res.render("./pages/change_password", {error: true, message: 'New passwords do not match.'})
+  }
+
+  if(req.body.newPassword == currentPassword) {
+    return res.render("./pages/change_password", {error: true, message: 'New password cannot be current password.'})
+  }
+
+  
+  
+  const newHash = await bcrypt.hash(req.body.newPassword, 10);
+  db.one(`UPDATE players SET password = '${newHash}' WHERE playerID = ${req.session.user.playerid} RETURNING playerID;`)
+  .then((playerID) => {
+    db.one("SELECT * FROM players WHERE playerID = $1", [playerID.playerid])
+      .then((user) => {
+        req.session.user = user;
+        req.session.save();
+        return res.render("./pages/profile", { user: req.session.user, error: false, message: 'Password changed successfully.'});
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.render("./pages/change_password", { user: req.session.user, error: true, message: 'Failed to change password.' });
+      })
+  })
+  .catch((err) => {
+    console.log(err);
+    return res.render("./pages/change_password", { user: req.session.user, error: true, message: 'Failed to change password.' });
+  });
+
+
+
+
+});
 
 
 

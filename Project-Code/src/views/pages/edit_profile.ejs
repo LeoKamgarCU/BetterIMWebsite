@@ -2,22 +2,23 @@
 <%- include ('../partials/menu') %>
 
 <main>
-    <div class="container">
+    <div class="container text-center">
+
+        <h3 style="padding-top:5vh"> Edit Profile </h3>
 
         <form action="/edit_profile" method="POST">
 
             <div style="width:30vh;padding-top: 5vh;" class="mx-auto">
-                <h3> Edit Profile </h3>
 
             <input type="hidden" name="playerid" value="<%= user.playerID %>">
 
             
 
             <label class="form-label"> Username </label>
-            <input type="text" class="form-control" name="username" value="<%= user.username %>"> <br>
+            <input type="text" class="form-control" name="username" value="<%= user.username %>" required> <br>
 
             <label class="form-label"> Name </label>
-            <input type="text" class="form-control" name="playername" value="<%= user.playername %>"> <br>
+            <input type="text" class="form-control" name="playername" value="<%= user.playername %>" required> <br>
 
             <label class="form-label" for="classyear">Class of</label>
             <select class="form-select" name="classyear" id="classyear" onload="" required>
@@ -32,12 +33,15 @@
             <label class="form-label"> Profile Photo Link</label>
             <input type="text" class="form-control" name="profilephotolink" value="<%= user.profilephoto %>"> <br>
 
-            <a href="/change_password">Change password</a><br>
+            <input style="background-color:#e8fcec; color:#17d475" class="btn rounded-pill" type="submit" value="Save changes">
 
-            <input type="submit" value="Save changes">
+
         </div>
 
         </form>
+<div style="padding-top:5vh">
+        <a class="btn rounded-pill" style="background-color:#ffe5ec;color:#fb6f92" href="/change_password">Change password</a>
+    </div>
 
         <script type="text/javascript">
             var select = document.getElementById("classyear");

@@ -3,12 +3,14 @@
 
 <main>
     <div class="container text-center">
-        <h3 style="padding-top:2vh"> Your Profile  <a class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475"  href="/edit_profile">Edit</a> </h3>
+        <%- include ('../partials/message') %>
+        <h3 style="padding-top:5vh"> Your Profile  <a class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475"  href="/edit_profile">Edit</a> </h3>
         <img src="<%= user.profilephoto %>" style="width:100px;height:100px;border-radius:50%;">
         
 
         <form action="/profile" method="POST">
             <div style="width:30vh;padding-top: 2vh;" class="mx-auto">
+
             <label class="form-label"> Username </label>
             <input type="text" class="form-control" value="<%= user.username %>" disabled> <br>
 
@@ -20,7 +22,7 @@
 
           
 
-            <a class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475" href="/change_password">Change password</a>
+            <a class="btn rounded-pill" style="background-color:#ffe5ec;color:#fb6f92" href="/change_password">Change password</a>
         </div>
         </form>
     </div>
