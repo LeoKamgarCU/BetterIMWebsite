@@ -1,0 +1,49 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+
+<main>
+    <div class="container text-center">
+        <h1 style="padding-top:2vh;padding-bottom: 2vh;"> All Players </h1>
+
+        <form action="/searchPlayers" method="GET">
+        <div class="input-group mb-3 mx-auto" style="width:58vh;">
+            
+            <input  type="text" class="form-control" name="q" id="q" placeholder="Search by player ID, username, name, or class year" aria-label="query" aria-describedby="basic-addon1">
+            <button class="btn btn-outline-secondary bg-white  border rounded-pill "  stype="button">
+                <img src="./img/search.png" style="width:3vh;">
+            </button>
+        </div>
+        
+        </form>
+
+        <div class="row">
+
+        <% players.forEach(function(player){ %>
+            <div class="col-md-2" style="padding-top:2vh">
+
+            <form action="/player" method="GET">
+                <input class="form-control" name="playerid" id="playerid" value="<%= player.playerid%>" type="hidden">
+
+            <button style="background-color:#e8fcec; color:#17d475; " class="btn rounded-pill"  >
+                    <%= player.playername  %>
+                    
+                  </button>
+                </form>
+                </div>
+
+
+        <% }); %>
+        </div>
+
+
+
+
+    </div>
+
+
+
+</main>
+
+
+<%- include ('../partials/footer') %>

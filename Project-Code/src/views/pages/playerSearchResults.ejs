@@ -1,0 +1,55 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+
+<main>    
+    <div class="container text-center">
+
+        <h1 style="padding-top:2vh;padding-bottom: 2vh;"> Player Search Results </h1>
+        <%- include ('../partials/message') %>
+
+
+
+        <div class="row">
+
+            <% players.forEach(function(player){ %>
+                <div class="col-md-2" style="padding-top:2vh">
+    
+                <form action="/player" method="GET">
+                    <input class="form-control" name="playerid" id="playerid" value="<%= player.playerid%>" type="hidden">
+    
+                <button style="background-color:#e8fcec; color:#17d475; " class="btn rounded-pill"  >
+                        <%= player.playername  %>
+                        
+                      </button>
+                    </form>
+                    </div>
+    
+    
+            <% }); %>
+
+            <% playersInt.forEach(function(player){ %>
+                <div class="col-md-2" style="padding-top:2vh">
+    
+                <form action="/player" method="GET">
+                    <input class="form-control" name="playerid" id="playerid" value="<%= player.playerid%>" type="hidden">
+    
+                <button style="background-color:#e8fcec; color:#17d475; " class="btn rounded-pill"  >
+                        <%= player.playername  %>
+                        
+                      </button>
+                    </form>
+                    </div>
+    
+    
+            <% }); %>
+            </div>
+
+
+
+
+</div>
+</main>
+
+
+<%- include ('../partials/footer') %>

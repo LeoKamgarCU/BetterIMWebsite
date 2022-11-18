@@ -3,9 +3,12 @@
 
 <main>
     <div class="container">
-        <h3> Your Profile </h3>
 
         <form action="/edit_profile" method="POST">
+
+            <div style="width:30vh;padding-top: 5vh;" class="mx-auto">
+                <h3> Edit Profile </h3>
+
             <input type="hidden" name="playerid" value="<%= user.playerID %>">
 
             
@@ -26,12 +29,14 @@
                 <option value="Other/NA">Other/NA</option>
             </select> <br>
 
-            <label class="form-label"> Profile Photo </label>
+            <label class="form-label"> Profile Photo Link</label>
             <input type="text" class="form-control" name="profilephotolink" value="<%= user.profilephoto %>"> <br>
 
             <a href="/change_password">Change password</a><br>
 
             <input type="submit" value="Save changes">
+        </div>
+
         </form>
 
         <script type="text/javascript">
