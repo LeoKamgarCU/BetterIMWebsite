@@ -287,7 +287,7 @@ app.post("/edit_profile", (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      return res.render("pages/profile", { user: req.session.user, error: false, true: 'That username is taken.' });
+      return res.render("pages/profile", { user: req.session.user, error: true, message: 'That username is taken.' });
     });
 });
 
