@@ -1,0 +1,62 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>
+    <div class="container text-center">
+        <div style="padding-top: 10vh;">
+            <div class="card text-white bg-dark mb-3 text-center mx-auto d-flex" style="width:25%;">
+                <div class="card-body">
+                    <h1 style="padding-top:2vh;">Player Details</h1>
+
+
+                    
+                    <h3 style="color:#1e90ff"> <%= player[0].playername%></h3>
+                    <h5> <i><%= player[0].username%></i></h5>
+                        <h4> ID: <%= player[0].playerid%></h4>
+                        
+                        <h4> Class of <%= player[0].classyear%></h4>
+                        <br>
+                        <h4 style="color:#1e90ff"> Teams:</h4>
+                        <% if(teams.length > 0) { %>
+
+                            <% teams.forEach(function(team){ %>
+                                <form action="/team" method="GET">
+                                    <input class="form-control" name="teamid" id="teamid" value="<%= team.teamid%>" type="hidden">
+                                    <div style="padding-top:2vh;">
+                                        <button class="btn rounded-pill" style="background-color:white;color:black">
+                                         <%= team.teamname%>
+                                    </button>
+                                </div>
+                                </form>
+
+
+
+
+
+
+                                
+                            <%});%>
+                        <% } else {%>
+                            <h5> This player has not joined any teams yet.</h5>
+                            <%}%>
+                    
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+       
+
+</div>
+
+
+
+</main>
+
+
+<%- include ('../partials/footer') %>

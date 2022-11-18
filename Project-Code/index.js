@@ -387,20 +387,112 @@ app.get("/game", (req, res) => {
     });
 });
 
-app.get("/myTeams", (req, res) => {
+app.get("/yourTeams", (req, res) => {
   db.any(`SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToPlayers WHERE playerID = ${req.session.user.playerid});`)
   .then((teams) => {
-    return res.render("./pages/myTeams", {teams});
+    return res.render("./pages/yourTeams", {teams});
 
   })
   .catch((err) => {
-    return res.render("./pages/myTeams", {
+    return res.render("./pages/yourTeams", {
       teams: [],
       error: true,
       message: err.message,
     });
   });
 });
+
+
+
+app.get("/players", (req, res) => {
+  db.any(`SELECT * FROM players ORDER BY playerID ASC;`)
+  .then((players) => {
+    return res.render("./pages/players", {players});
+
+  })
+  .catch((err) => {
+    return res.render("./pages/players", {
+      players: [],
+      error: true,
+      message: err.message,
+    });
+  });
+});
+
+
+app.get("/searchPlayers", (req, res) => {
+  const q = req.query.q;
+  db.any(`SELECT * FROM players WHERE  username = '${q}' OR playerName = '${q}'`)
+    .then((players) => {
+      if(players.length == 0) {
+        db.any(`SELECT * FROM players WHERE classYear = ${q} OR playerid = ${q};`)
+          .then((playersInt) => {
+            if(playersInt.length == 0) {
+              return res.render("./pages/playerSearchResults", {
+                playersInt: [],
+                players: [],
+                error: true,
+                message: 'No results.',
+              });
+            }
+            return res.render("./pages/playerSearchResults", {players: [], playersInt});
+          })
+          .catch((err) => {
+            return res.render("./pages/playerSearchResults", {
+              playersInt: [],
+              players: [],
+              error: true,
+              message: 'No results.',
+            });
+          });
+      }
+      else {
+        return res.render("./pages/playerSearchResults", {players, playersInt: []});
+      }
+
+    })
+    .catch((err) => {
+      return res.render("./pages/playerSearchResults", {
+        playersInt: [],
+        players: [],
+        error: true,
+        message: 'No results.',
+      });
+    });
+});
+
+
+app.get("/player", (req, res) => {
+  db.any(`SELECT * FROM players WHERE playerid = ${req.query.playerid} LIMIT 1;`)
+  .then((player) => {
+    db.any(`SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToPlayers WHERE playerID = ${player[0].playerid});`)
+      .then((teams) =>{
+        return res.render("./pages/player", {player, teams});
+      })
+      .catch((err) => {
+        return res.render("./pages/player", {
+          teams: [],
+          player: [],
+          error: true,
+          message: err.message,
+        });
+      });
+
+
+    
+
+  })
+  .catch((err) => {
+    return res.render("./pages/player", {
+      teams: [],
+      player: [],
+      error: true,
+      message: err.message,
+    });
+  });
+});
+
+
 
 
 // End Routing
