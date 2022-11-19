@@ -145,20 +145,23 @@ app.get("/sports", (req, res) => {
           console.log(teamsToSports)
           res.render("./pages/sports", {
             sports,
-            teamsToSports
+            teamsToSports,
+            user: req.session.user 
           });
         })
         .catch((err) => {
           res.render("./pages/home", {
             error: true,
-            message: "No sports found in database."
+            message: "No sports found in database.",
+            user: req.session.user 
           });
         });
     })
     .catch((err) => {
       res.render("./pages/home", {
         error: true,
-        message: "No sports found in database."
+        message: "No sports found in database.",
+        user: req.session.user 
       });
     });
 });
@@ -194,13 +197,14 @@ app.get("/teams/:sportName", (req, res) => {
         sportID: data[1].sportid,
         teamsToPlayers: data[2],
         teamsToCaptains: data[3],
-        playerNames: data[4]
+        playerNames: data[4],
+        user: req.session.user 
       });
     })
     .catch(err => {
       // failure, ROLLBACK was executed
       console.log(err);
-      return res.render("./pages/sports", { message: "Error Occured In Team Query", error: 1 })    
+      return res.render("./pages/sports", { message: "Error Occured In Team Query", error: 1 ,user: req.session.user })    
     });
 });
 
@@ -208,10 +212,10 @@ app.get("/team/view/:teamID", (req, res) => {
   db.one("SELECT * FROM teams WHERE teamID=$1", [req.params.teamID])
 
       .then((team) => {
-        return res.render("./pages/team", { team: team })
+        return res.render("./pages/team", { team: team ,user: req.session.user })
       })
       .catch((err) => {
-        return res.render("./pages/sports", { message: "Team does not exist", error: 1 })
+        return res.render("./pages/sports", { message: "Team does not exist", error: 1 ,user: req.session.user })
       })
 
 })
@@ -224,16 +228,16 @@ app.post("/team/join", (req, res) => {
       db.one("SELECT * FROM teams WHERE teamID=$1", [req.body.teamid])
         .then((team) => {
           console.log("team:" + team.teamname);
-          return res.render(`./pages/team`, { team: team, error: false, message: 'Successfully joined team.' });
+          return res.render(`./pages/team`, { team: team, error: false, message: 'Successfully joined team.' ,user: req.session.user });
         })
         .catch((err) => {
           console.log(err);
-          return res.render(`./pages/sports`, { error: true, message: 'Unable to find team.' });
+          return res.render(`./pages/sports`, { error: true, message: 'Unable to find team.',user: req.session.user  });
         });
     })
     .catch((err) => {
       console.log(err);
-      return res.render("./pages/teams", { error: true, message: 'Unable to join team.' });
+      return res.render("./pages/teams", { error: true, message: 'Unable to join team.',user: req.session.user });
     });
 });
 
@@ -247,21 +251,21 @@ app.post("/team/create", (req, res) => {
         .then(() => {
           db.one('SELECT * FROM teams where teamID = $1', [teamID[0].teamid])
             .then((team) => {
-              return res.render("./pages/team", { team: team });
+              return res.render("./pages/team", { team: team ,user: req.session.user });
             })
             .catch((err) => {
               console.log(err);
-              return res.render(`./pages/sports`, { error: true, message: 'Unable to find team.' });
+              return res.render(`./pages/sports`, { error: true, message: 'Unable to find team.',user: req.session.user  });
             })
         })
         .catch((err) => {
           console.log(err);
-          return res.render(`./pages/sports`, { error: true, message: 'Unable to add team relations' });
+          return res.render(`./pages/sports`, { error: true, message: 'Unable to add team relations',user: req.session.user  });
         })
     })
     .catch((err) => {
       console.log(err);
-      return res.render("./pages/teams", { error: true, message: 'Unable to create team.' });
+      return res.render("./pages/teams", { error: true, message: 'Unable to create team.',user: req.session.user  });
     })
 });
 
@@ -313,11 +317,11 @@ app.get("/yourUpcomingGames", (req, res) => {
     .then((games) => {
       db.any(checkOnTeam)
         .then((teams) => {
-          res.render("./pages/yourUpcomingGames", { games, teams });
+          res.render("./pages/yourUpcomingGames", { games, teams ,user: req.session.user });
         })
         .catch((err) => {
           console.log(err);
-          res.render("./pages/yourUpcomingGames", { error: true });
+          res.render("./pages/yourUpcomingGames", { error: true ,user: req.session.user });
         });
     })
     .catch((err) => {
@@ -325,6 +329,7 @@ app.get("/yourUpcomingGames", (req, res) => {
       res.render("./pages/yourUpcomingGames", {
         games: [],
         error: true,
+        user: req.session.user 
       });
     });
 });
@@ -336,6 +341,7 @@ app.get("/allUpcomingGames", (req, res) => {
     .then((games) => {
       res.render("./pages/allUpcomingGames", {
         games,
+        user: req.session.user 
       });
 
     })
@@ -344,6 +350,7 @@ app.get("/allUpcomingGames", (req, res) => {
         games: [],
         error: true,
         message: err.message,
+        user: req.session.user 
       });
     });
 });
@@ -355,6 +362,7 @@ app.get("/allGames", (req, res) => {
     .then((games) => {
       res.render("./pages/allGames", {
         games,
+        user: req.session.user 
       });
 
     })
@@ -363,6 +371,7 @@ app.get("/allGames", (req, res) => {
         games: [],
         error: true,
         message: err.message,
+        user: req.session.user 
       });
     });
 });
@@ -375,7 +384,7 @@ app.get("/game", (req, res) => {
         .then(function (game) {
           db.any(`SELECT sportname FROM sports WHERE sportid = (SELECT sportid FROM teamsToSports WHERE teamid = ${teaminfo[0].teamid} LIMIT 1);`)
             .then(function (sportname) {
-              return res.render('./pages/game', { game, user, teaminfo, sportname })
+              return res.render('./pages/game', { game, user, teaminfo, sportname ,user: req.session.user })
 
             })
             .catch((err) => {
@@ -394,7 +403,7 @@ app.get("/game", (req, res) => {
 app.get("/yourTeams", (req, res) => {
   db.any(`SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToPlayers WHERE playerID = ${req.session.user.playerid});`)
   .then((teams) => {
-    return res.render("./pages/yourTeams", {teams});
+    return res.render("./pages/yourTeams", {teams,user: req.session.user });
 
   })
   .catch((err) => {
@@ -402,6 +411,7 @@ app.get("/yourTeams", (req, res) => {
       teams: [],
       error: true,
       message: err.message,
+      user: req.session.user 
     });
   });
 });
@@ -411,7 +421,7 @@ app.get("/yourTeams", (req, res) => {
 app.get("/players", (req, res) => {
   db.any(`SELECT * FROM players ORDER BY playerID ASC;`)
   .then((players) => {
-    return res.render("./pages/players", {players});
+    return res.render("./pages/players", {players,user: req.session.user });
 
   })
   .catch((err) => {
@@ -419,6 +429,7 @@ app.get("/players", (req, res) => {
       players: [],
       error: true,
       message: err.message,
+      user: req.session.user 
     });
   });
 });
@@ -437,9 +448,10 @@ app.get("/searchPlayers", (req, res) => {
                 players: [],
                 error: true,
                 message: 'No results.',
+                user: req.session.user 
               });
             }
-            return res.render("./pages/playerSearchResults", {players: [], playersInt});
+            return res.render("./pages/playerSearchResults", {players: [], playersInt, user: req.session.user});
           })
           .catch((err) => {
             return res.render("./pages/playerSearchResults", {
@@ -447,11 +459,12 @@ app.get("/searchPlayers", (req, res) => {
               players: [],
               error: true,
               message: 'No results.',
+              user: req.session.user 
             });
           });
       }
       else {
-        return res.render("./pages/playerSearchResults", {players, playersInt: []});
+        return res.render("./pages/playerSearchResults", {players, playersInt: [],user: req.session.user });
       }
 
     })
@@ -461,6 +474,7 @@ app.get("/searchPlayers", (req, res) => {
         players: [],
         error: true,
         message: 'No results.',
+        user: req.session.user 
       });
     });
 });
@@ -471,7 +485,7 @@ app.get("/player", (req, res) => {
   .then((player) => {
     db.any(`SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToPlayers WHERE playerID = ${player[0].playerid});`)
       .then((teams) =>{
-        return res.render("./pages/player", {player, teams});
+        return res.render("./pages/player", {player, teams,user: req.session.user });
       })
       .catch((err) => {
         return res.render("./pages/player", {
@@ -479,6 +493,7 @@ app.get("/player", (req, res) => {
           player: [],
           error: true,
           message: err.message,
+          user: req.session.user 
         });
       });
 
@@ -492,6 +507,7 @@ app.get("/player", (req, res) => {
       player: [],
       error: true,
       message: err.message,
+      user: req.session.user 
     });
   });
 });
@@ -505,15 +521,15 @@ app.post("/change_password", async (req, res) => {
   const currentPassword = req.body.currentPassword;
   const match = await bcrypt.compare(currentPassword, req.session.user.password);
   if(!match) {
-    return res.render("./pages/change_password", {error: true, message: 'Incorrect current password.'})
+    return res.render("./pages/change_password", {error: true, message: 'Incorrect current password.',user: req.session.user })
   }
 
   if(req.body.newPassword !== req.body.confirmNewPassword) {
-    return res.render("./pages/change_password", {error: true, message: 'New passwords do not match.'})
+    return res.render("./pages/change_password", {error: true, message: 'New passwords do not match.',user: req.session.user })
   }
 
   if(req.body.newPassword == currentPassword) {
-    return res.render("./pages/change_password", {error: true, message: 'New password cannot be current password.'})
+    return res.render("./pages/change_password", {error: true, message: 'New password cannot be current password.',user: req.session.user })
   }
 
   
@@ -525,16 +541,16 @@ app.post("/change_password", async (req, res) => {
       .then((user) => {
         req.session.user = user;
         req.session.save();
-        return res.render("./pages/profile", { user: req.session.user, error: false, message: 'Password changed successfully.'});
+        return res.render("./pages/profile", { user: req.session.user, error: false, message: 'Password changed successfully.',user: req.session.user });
       })
       .catch((err) => {
         console.log(err);
-        return res.render("./pages/change_password", { user: req.session.user, error: true, message: 'Failed to change password.' });
+        return res.render("./pages/change_password", { user: req.session.user, error: true, message: 'Failed to change password.',user: req.session.user  });
       })
   })
   .catch((err) => {
     console.log(err);
-    return res.render("./pages/change_password", { user: req.session.user, error: true, message: 'Failed to change password.' });
+    return res.render("./pages/change_password", { user: req.session.user, error: true, message: 'Failed to change password.',user: req.session.user  });
   });
 
 

@@ -7,7 +7,7 @@
         <h3 style="padding-top:5vh"> Your Profile  <a class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475"  href="/edit_profile">Edit</a> </h3>
         <img src="<%= user.profilephoto %>" style="width:100px;height:100px;border-radius:50%;">
         <div style="padding-top:2vh">
-        <button class="btn rounded-pill bg-light" style="font-size:1.5vh">Member since <%= new Date(user.joindate).getMonth()+1%>-<%=new Date(user.joindate).getDate()%>-<%=new Date(user.joindate).getFullYear()%> </button>
+        <div class="btn rounded-pill bg-light disabled border-0" style="font-size:1.5vh">Member since <%= new Date(user.joindate).getMonth()+1%>-<%=new Date(user.joindate).getDate()%>-<%=new Date(user.joindate).getFullYear()%> </div>
     </div>
 
         <form action="/profile" method="POST">

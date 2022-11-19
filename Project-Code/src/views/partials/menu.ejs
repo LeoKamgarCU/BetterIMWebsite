@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <img src="./img/logo.png" style="width:10%;margin-left:0;">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -25,7 +25,7 @@
 
         <li class="nav-item dropdown">
           <a  style="color:black;font-weight:bold" class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">Profile
+            aria-expanded="false"><span style="padding-right:1vh;"><img style="width:30px;height:30px;border-radius:50%;" src="<%= user.profilephoto %>"></span><%= user.username  %>
           </a> 
         
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
