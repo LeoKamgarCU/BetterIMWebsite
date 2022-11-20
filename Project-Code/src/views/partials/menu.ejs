@@ -25,7 +25,19 @@
 
         <li class="nav-item dropdown">
           <a  style="color:black;font-weight:bold" class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false"><span style="padding-right:1vh;"><img style="width:30px;height:30px;border-radius:50%;" src="<%= user.profilephoto %>"></span><%= user.username  %>
+            aria-expanded="false"><span style="padding-right:1vh;">
+
+
+
+              <% if(user.profilephoto !== '') { %>
+                <img src="<%= user.profilephoto %>" style="width:30px;height:30px;border-radius:50%;">
+                <% } else { %>
+                <img src="./img/defaultIcon.png" style="width:30px;height:30px;border-radius:50%;">
+                <% } %>
+
+
+
+            </span><%= user.username  %>
           </a> 
         
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">

@@ -5,8 +5,8 @@
       <div class="col"><%- include ('../partials/message') %></div>
         <div class="text-center">
           <img  src="./img/logo.png" style="width:25%; padding-top:10vh; padding-bottom:2vh;">
+          <h3>Log in</h3>
         </div>
-        <h1 class="text-center">Log In</h1>
         <div class="input-group mb-3 justify-content-center text-center">
           <form action="/login" method="POST">
             <div class="input-group mb-3">
@@ -18,7 +18,14 @@
             <button class="btn rounded-pill" style="background-color:#ecf8f8; color:#1fbebe" type="">Log In</button>
           </form>       
         </div>
-    <%- include ('../partials/register') %>
+
+    <div class="text-center" style="padding-top:1vh;">
+      <a href="/forgotPassword" class="btn rounded-pill" style="font-size:10px;background-color:#d8d8d8;color:#595959">Forgot Password</a>
+      </div>
+      <div style="padding-bottom:35vh">
+      <%- include ('../partials/register') %>
+    </div>
+
   </div>
 </main>
 
