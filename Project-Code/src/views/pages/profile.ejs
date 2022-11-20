@@ -5,13 +5,23 @@
     <div class="container text-center">
         <%- include ('../partials/message') %>
         <h3 style="padding-top:5vh"> Your Profile  <a class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475"  href="/edit_profile">Edit</a> </h3>
+        
+        <% if(user.profilephoto !== '') { %>
         <img src="<%= user.profilephoto %>" style="width:100px;height:100px;border-radius:50%;">
+        <% } else { %>
+        <img src="./img/defaultIcon.png" style="width:100px;height:100px;border-radius:50%;">
+        <% } %>
+
+       
+       
+       
         <div style="padding-top:2vh">
         <div class="btn rounded-pill bg-light disabled border-0" style="font-size:1.5vh">Member since <%= new Date(user.joindate).getMonth()+1%>-<%=new Date(user.joindate).getDate()%>-<%=new Date(user.joindate).getFullYear()%> </div>
-    </div>
+    </div><br>
+
 
         <form action="/profile" method="POST">
-            <div style="width:30vh;padding-top: 2vh;" class="mx-auto">
+            <div style="width:30vh" class="mx-auto">
 
             <label class="form-label"> Username </label>
             <input type="text" class="form-control" value="<%= user.username %>" disabled> <br>
@@ -20,13 +30,43 @@
             <input type="text" class="form-control" value="<%= user.playername %>" disabled> <br>
 
             <label class="form-label"> Class year </label>
-            <input type="text" class="form-control" value="<%= user.classyear %>" disabled> <br>
+            <% if(user.classyear !== 0) { %>
+                <input type="text" class="form-control" value="<%= user.classyear %>" disabled> <br>
+                <% } else { %>
+                    <input type="text" class="form-control" value="Other/NA" disabled> <br>
+                    <% } %>
 
+            <label class="form-label"> Gender </label>
+            <input type="text" class="form-control" value="<%= user.gender %>" disabled> <br>
+            
+
+            <label class="form-label"> Email </label>
+            <% if(user.email) { %>
+                <input type="text" class="form-control" value="<%= user.email %>" disabled> <br>
+                <% } else { %>
+                    <input type="text" class="form-control" placeholder="none" value="" disabled> <br>
+                    <% } %>
+
+                    <label class="form-label"> Phone Number </label>
+            <% if(user.phone) { %>
+                <input type="text" class="form-control" value="<%= user.phone %>" disabled> <br>
+                <% } else { %>
+                    <input type="text" class="form-control" placeholder="none" value="" disabled> <br>
+                    <% } %>
+
+
+                  
           
-
-            <a class="btn rounded-pill" style="background-color:#ffe5ec;color:#fb6f92" href="/change_password">Change password</a>
         </div>
         </form>
+
+        <div style="padding-bottom:10vh;">
+        <a class="btn rounded-pill" style="background-color:#ffe5ec;color:#fb6f92" href="/change_password">Change password</a>
+    </div>
+
+
+
+        
     </div>
 </main>
 

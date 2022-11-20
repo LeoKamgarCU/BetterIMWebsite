@@ -20,18 +20,55 @@
             <label class="form-label"> Name </label>
             <input type="text" class="form-control" name="playername" value="<%= user.playername %>" required> <br>
 
+
             <label class="form-label" for="classyear">Class of</label>
-            <select class="form-select" name="classyear" id="classyear" onload="" required>
-                <option value=""></option>
-                <option value="2023" id="2023">2023</option>
-                <option value="2024" id="2024">2024</option>
-                <option value="2025" id="2025">2025</option>
-                <option value="2026" id="2026">2026</option>
-                <option value="Other/NA">Other/NA</option>
-            </select> <br>
+            <% if(user.classyear !== 0) { %>
+                <select class="form-select" name="classyear" id="classyear" onload="" required>
+                    <option value=""></option>
+                    <option value="2023" id="2023">2023</option>
+                    <option value="2024" id="2024">2024</option>
+                    <option value="2025" id="2025">2025</option>
+                    <option value="2026" id="2026">2026</option>
+                    <option value="Other/NA">Other/NA</option>
+                </select> <br>                
+                <% } else { %>
+                    <select class="form-select" name="classyear" id="classyear" onload="">
+                        <option value="0" id="0" selected disabled>Other/NA</option>
+                        <option value="2023" id="2023">2023</option>
+                        <option value="2024" id="2024">2024</option>
+                        <option value="2025" id="2025">2025</option>
+                        <option value="2026" id="2026">2026</option>
+                        <option value="Other/NA">Other/NA</option>
+                    </select> <br>                   
+                     <% } %>
+
+
+           
+            
+
+
+            
 
             <label class="form-label"> Profile Photo Link</label>
-            <input type="text" class="form-control" name="profilephotolink" value="<%= user.profilephoto %>"> <br>
+            <input type="text" class="form-control" name="profilephotolink" value="<%= user.profilephoto %>"><br>
+
+            <label class="form-label"> Email </label>
+            <% if(user.email) { %>
+                <input type="text" class="form-control" name="email" value="<%= user.email %>" pattern="^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$"><br>
+                <% } else { %>
+                    <input type="text" class="form-control" name="email" value="" pattern="^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$"><br>
+                    <% } %>
+
+                    <label class="form-label"> Phone Number </label>
+
+                    <% if(user.phone) { %>
+                        <input type="text" class="form-control" name="phone" value="<%= user.phone %>" pattern="^[0-9]{10}$"><br>
+                        <% } else { %>
+                            <input type="text" class="form-control" name="phone" value="" pattern="^[0-9]{10}$"><br>
+                            <% } %>
+
+
+                           
 
             <input style="background-color:#e8fcec; color:#17d475" class="btn rounded-pill" type="submit" value="Save changes">
 
@@ -39,7 +76,7 @@
         </div>
 
         </form>
-<div style="padding-top:5vh">
+<div style="padding-bottom:10vh;padding-top:2vh">
         <a class="btn rounded-pill" style="background-color:#ffe5ec;color:#fb6f92" href="/change_password">Change password</a>
     </div>
 
