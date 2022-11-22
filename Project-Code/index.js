@@ -87,22 +87,23 @@ app.post("/register", async (req, res) => {
   }
   const hash = await bcrypt.hash(req.body.password, 10);
 
-  var userPhotoLink = '';
-  if (req.body.profilePhotoLink.length !== 0) {
-    userPhotoLink = req.body.profilePhotoLink;
-  }
+ 
 
   var gender = req.body.gender;
   if (!gender) {
     gender = 'Other/Prefer not to say';
   }
 
+  var email = req.body.email;
+  if(!email) {
+    email = null;
+  }
   
   const classYear = /\d/.test(req.body.classYear) ? req.body.classYear : '0';
   const date = new Date();
   const joinDate = date.toISOString().split('T')[0];
   const insertQuery = 'INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate, email, phone, gender) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);';
-  db.any(insertQuery, [req.body.username, req.body.playername, hash, classYear, userPhotoLink, joinDate, req.body.email, req.body.phone, gender])
+  db.any(insertQuery, [req.body.username, req.body.playername, hash, classYear, req.body.profilePhotoLink, joinDate, email, req.body.phone, gender])
     .then(() => {
       return res.render('./pages/login', { error: false, message: 'Successfully registered new account.' });
     })
@@ -252,8 +253,8 @@ app.get("/profile", (req, res) => {
   return res.render("./pages/profile", { user: req.session.user });
 });
 
-app.get("/edit_profile", (req, res) => {
-  return res.render("./pages/edit_profile", { user: req.session.user });
+app.get("/editProfile", (req, res) => {
+  return res.render("./pages/editProfile", { user: req.session.user });
 });
 
 app.get("/teams/:sportName", (req, res) => {
@@ -349,15 +350,20 @@ app.post("/team/create", (req, res) => {
     })
 });
 
-app.post("/edit_profile", (req, res) => { 
+app.post("/editProfile", (req, res) => { 
   console.log(req.session.user);
   var year = req.body.classyear;
   if(!year || year == 'Other/NA') {
     year = 0;
   }
 
+  var email = req.body.email;
+  if(!email) {
+    email = null;
+  }
+
   db.one("UPDATE players SET username = $1, playerName = $2, classYear = $3, profilePhoto = $4, email = $5, phone = $6 WHERE playerID = $7 RETURNING playerID;",
-    [req.body.username, req.body.playername, year, req.body.profilephotolink, req.body.email, req.body.phone, req.session.user.playerid])
+    [req.body.username, req.body.playername, year, req.body.profilephotolink, email, req.body.phone, req.session.user.playerid])
     .then((playerID) => {
       db.one("SELECT * FROM players WHERE playerID = $1", [playerID.playerid])
         .then((user) => {
@@ -594,23 +600,23 @@ app.get("/player", (req, res) => {
 });
 
 
-app.get("/change_password", (req, res) => {
-  return res.render("./pages/change_password", { user: req.session.user });
+app.get("/changePassword", (req, res) => {
+  return res.render("./pages/changePassword", { user: req.session.user });
 });
 
-app.post("/change_password", async (req, res) => {
+app.post("/changePassword", async (req, res) => {
   const currentPassword = req.body.currentPassword;
   const match = await bcrypt.compare(currentPassword, req.session.user.password);
   if(!match) {
-    return res.render("./pages/change_password", {error: true, message: 'Incorrect current password.',user: req.session.user })
+    return res.render("./pages/changePassword", {error: true, message: 'Incorrect current password.',user: req.session.user })
   }
 
   if(req.body.newPassword !== req.body.confirmNewPassword) {
-    return res.render("./pages/change_password", {error: true, message: 'New passwords do not match.',user: req.session.user })
+    return res.render("./pages/changePassword", {error: true, message: 'New passwords do not match.',user: req.session.user })
   }
 
   if(req.body.newPassword == currentPassword) {
-    return res.render("./pages/change_password", {error: true, message: 'New password cannot be current password.',user: req.session.user })
+    return res.render("./pages/changePassword", {error: true, message: 'New password cannot be current password.',user: req.session.user })
   }
 
   
@@ -626,12 +632,12 @@ app.post("/change_password", async (req, res) => {
       })
       .catch((err) => {
         console.log(err);
-        return res.render("./pages/change_password", { user: req.session.user, error: true, message: 'Failed to change password.',user: req.session.user  });
+        return res.render("./pages/changePassword", { user: req.session.user, error: true, message: 'Failed to change password.',user: req.session.user  });
       })
   })
   .catch((err) => {
     console.log(err);
-    return res.render("./pages/change_password", { user: req.session.user, error: true, message: 'Failed to change password.',user: req.session.user  });
+    return res.render("./pages/changePassword", { user: req.session.user, error: true, message: 'Failed to change password.',user: req.session.user  });
   });
 
 

@@ -6,7 +6,7 @@
         <h1 style="padding-top:2vh; padding-bottom:2vh">Your upcoming games</h1>
         <h4 style="color:#949494"> Upcoming games that your team(s) are playing in. </h4>
         <h6 style="color:#949494">Click a date below to view the game details</h6>
-        <h8 style="color:#949494">If there are no games, then all games in the database have passed.</h8>
+        <h6 style="color:#949494">If there are no games, then all games in the database have passed.</h6>
 
         <div style="padding-top:2vh">
             <a href="allUpcomingGames" class="btn rounded-pill" style="background-color:#1e90ff; color:#ffffff">All upcoming games</a>
@@ -14,7 +14,7 @@
         </div>
 
               <% if(locals.error || teams.length == 0) {  %>
-                <h4 style="padding-top:5vh;color:#ff8a8a">You have not joined any teams yet. <br>Join teams by going to the sports page.</h4>
+                <h4 style="padding-top:5vh;color:#ff8a8a">You have not joined any teams yet. <br>Join teams by going to the <a href="/sports"> sports</a> page.</h4>
                 <% } else if(games.length == 0) { %>
                 <h4 style="padding-top:5vh;color:#17d475">You have no upcoming games</h4>
 
