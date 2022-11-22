@@ -14,7 +14,7 @@ How to run locally:
 - Download and open Docker Desktop
 - Open/clone repository and navigate to 'Project-Code" directory
 - Add a .env file to the 'Project-Code' directory
-  - Contact one of us for .env details.
+  - Contact one of us for .env details. This is private information and not pushed to GitHub.
 - Run 'docker compose up'
 - Navigate to localhost:3000 in a web browser
 
