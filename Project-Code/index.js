@@ -7,7 +7,6 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const e = require('express');
 const nodemailer = require('nodemailer');
-const { INSPECT_MAX_BYTES } = require('buffer');
 const log = console.log;
 
 // database configuration
@@ -49,13 +48,9 @@ app.use(bodyParser.urlencoded({
 
 // Begin Routing
 
-// NOTE: pages to render must have './pages/page' format due to project structure
-
 app.get("/", (req, res) => {
   return res.render("./pages/home");
 });
-
-
 
 app.get("/login", (req, res) => {
   return res.render('./pages/login');

@@ -2,34 +2,29 @@
 <%- include ('../partials/menu') %>
 
 <main>
-    <div class="container text-center" style="padding-bottom:10vh">
-        <h1 style="padding-top:2vh; padding-bottom:2vh">All games</h1>
-        <h4 style="color:#949494"> All the games in the database. </h4>
-        <h6 style="color:#949494">Click a date below to view the game details</h6>
+  <div class="container text-center" style="padding-bottom:10vh;">
+    <h1 style="padding-top:2vh; padding-bottom:2vh">All games</h1>
+    <h4 style="color:#949494;">All the games in the database.</h4>
+    <h6 style="color:#949494;">Click a date below to view the game details</h6>
 
-        <div style="padding-top:2vh">
-            <a href="yourUpcomingGames" class="btn rounded-pill" style="background-color:#1e90ff; color:#ffffff">Your upcoming games</a>
-            <a href="allUpcomingGames" class="btn rounded-pill" style="background-color:#1e90ff; color:#ffffff">All upcoming games</a>
-        </div>
-
-        <% if(games.length == 0) { %>
-            <h4 style="padding-top:5vh;color:#17d475">No games in the database</h4>
-        <% } %>
-
-                <% games.forEach(function(game){ %>
-                    <form action="/game" method="GET">
-                        <input class="form-control" name="gameid" id="gameid" value="<%= game.gameid%>" type="hidden">
-                    <div style="padding-top:3vh">
-                      <button class="btn btn-secondary"  >
-                        ID <%=game.gameid%>:
-                        <%= game.gamedate.getMonth()+1 %>-<%=  game.gamedate.getDate()%>-<%= game.gamedate.getFullYear() %>
-    
-                      </button>
-                    </div>
-                  </form>
-                <% }); %>
-
+    <div style="padding-top:2vh;">
+        <a href="yourUpcomingGames" class="btn rounded-pill" style="background-color:#1e90ff;color:#ffffff;">Your upcoming games</a>
+        <a href="allUpcomingGames" class="btn rounded-pill" style="background-color:#1e90ff;color:#ffffff;">All upcoming games</a>
     </div>
+
+    <% if(games.length == 0) { %>
+        <h4 style="padding-top:5vh;color:#17d475;">No games in the database</h4>
+    <% } %>
+
+    <% games.forEach(function(game) { %>
+      <form action="/game" method="GET">
+        <input class="form-control" name="gameid" id="gameid" value="<%= game.gameid%>" type="hidden">
+        <div style="padding-top:3vh;">
+          <button class="btn btn-secondary">ID <%= game.gameid %>: <%= game.gamedate.getMonth()+1 %>-<%= game.gamedate.getDate() %>-<%= game.gamedate.getFullYear() %></button>
+        </div>
+      </form>
+    <% }); %>
+  </div>
 </main>
 
 <%- include ('../partials/footer') %>

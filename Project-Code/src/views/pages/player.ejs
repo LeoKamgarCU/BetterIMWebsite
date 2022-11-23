@@ -2,83 +2,53 @@
 <%- include ('../partials/menu') %>
 
 <main>
-    <div class="container text-center">
-        
-        <div style="padding-top: 10vh;padding-bottom:10vh">
-            <div class="card text-white bg-dark mb-3 text-center mx-auto d-flex" style="width:25%;">
-                <div class="card-body">
-                    <h1 style="padding-top:2vh;">Player Profile</h1>
+    <div class="container text-center" style="padding-top:10vh;padding-bottom:10vh;">
+        <div class="card text-white bg-dark mb-3 text-center mx-auto d-flex" style="width:25%;">
+            <div class="card-body">
+                <h1 style="padding-top:2vh;">Player Profile</h1>
 
-
-                    <%if(player[0].profilephoto) {%>
+                <% if(player[0].profilephoto) { %>
                     <img src="<%= player[0].profilephoto %>" style="width:100px;height:100px;border-radius:50%;">
-                    <% } else {%>
-                        <img src="./img/defaultIcon.png" style="width:100px;height:100px;border-radius:50%;">
-<% } %>
+                <% } else { %>
+                    <img src="./img/defaultIcon.png" style="width:100px;height:100px;border-radius:50%;">
+                <% } %>
 
+                <h3 style="color:#1e90ff;"><%= player[0].playername %></h3>
 
+                <h5><i><%= player[0].username %></i></h5>
 
-                    <h3 style="color:#1e90ff;"> <%= player[0].playername%></h3>
-                    <h5> <i><%= player[0].username%></i></h5>
-                        <h5> ID: <%= player[0].playerid%></h5>
-                        
+                <h5>ID: <%= player[0].playerid %></h5>
 
-                        <% if(user.classyear !== 0) { %>
-                            <h5> Class of <%= player[0].classyear%></h5>
-                            <% } else { %>
-                                <h5> Class of Other/NA</h5>
-                                <% } %>
-                    
-                        <h8> Gender: <%= player[0].gender %> </h8>
-                        <% if(player[0].phone) { %>
-                        <h6> Phone number: <%= player[0].phone.substr(0,3) %>-<%= player[0].phone.substr(3,3) %>-<%= player[0].phone.substr(6,9) %></h6> 
-                            <% } else {%>
-                                <h6> Phone number: none</h6> 
+                <% if(user.classyear !== 0) { %>
+                    <h5>Class of <%= player[0].classyear %></h5>
+                <% } else { %>
+                    <h5>Class of Other/NA</h5>
+                <% } %>
 
-                                <% } %>
+                <h8>Gender: <%= player[0].gender %></h8>
 
+                <% if(player[0].phone) { %>
+                    <h6>Phone number: <%= player[0].phone.substr(0,3) %>-<%= player[0].phone.substr(3,3) %>-<%= player[0].phone.substr(6,9) %></h6> 
+                <% } else { %>
+                    <h6>Phone number: none</h6> 
+                <% } %>
 
-                        <h4 style="color:#1e90ff;padding-top:2vh"> Teams:</h4>
-                        <% if(teams.length > 0) { %>
-
-                            <% teams.forEach(function(team){ %>
-                                <form action="/team" method="GET">
-                                    <input class="form-control" name="teamid" id="teamid" value="<%= team.teamid%>" type="hidden">
-                                    <div style="padding-top:2vh;">
-                                        <button class="btn rounded-pill" style="background-color:white;color:black">
-                                         <%= team.teamname%>
-                                    </button>
-                                </div>
-                                </form>
-
-
-
-
-
-
-                                
-                            <%});%>
-                        <% } else {%>
-                            <h5> This player has not joined any teams yet.</h5>
-                            <%}%>
-                    
-                </div>
-              </div>
+                <h4 style="color:#1e90ff;padding-top:2vh;">Teams:</h4>
+                <% if(teams.length > 0) { %>
+                    <% teams.forEach(function(team) { %>
+                    <form action="/team" method="GET">
+                        <input class="form-control" name="teamid" id="teamid" value="<%= team.teamid %>" type="hidden">
+                        <div style="padding-top:2vh;">
+                            <button class="btn rounded-pill" style="background-color:white;color:black;"><%= team.teamname %></button>
+                        </div>
+                    </form>
+                    <% }); %>
+                <% } else { %>
+                    <h5>This player has not joined any teams yet.</h5>
+                <% } %>
             </div>
-
-
-
-
-
-
-
-       
-
-</div>
-
-
-
+        </div>
+    </div>
 </main>
-
 
 <%- include ('../partials/footer') %>

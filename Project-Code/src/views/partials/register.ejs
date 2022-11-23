@@ -1,5 +1,5 @@
 <div class="text-center" style="padding-top:10vh;">
-  <button class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475" data-bs-toggle="modal" data-bs-target="#registerModal">Create new account</button>
+  <button class="btn rounded-pill" style="background-color:#e8fcec;color:#17d475;" data-bs-toggle="modal" data-bs-target="#registerModal">Create new account</button>
 </div>
 
 <form action="/register" method="POST">
@@ -7,9 +7,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header text-center">
-        <h1 class="modal-title fs-3">Sign Up</h1>
-        <button type="reset" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h1 class="modal-title fs-3">Sign Up</h1>
+          <button type="reset" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+
         <div class="modal-body">
           <div class="input-group mb-3">
             <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
@@ -61,14 +62,13 @@
             <input type="text" class="form-control" name="phone" id="phone" placeholder="Phone number (optional, this will be visible to other players)" pattern="^[0-9]{10}$">
           </div>
 
-
-          
-
         </div>
+
         <div class="modal-footer">
           <button type="reset" class="btn rounded-pill" style="background-color:#dedee3; color:#9c9cac" data-bs-dismiss="modal">Close</button>
           <button type="submit" class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475">Sign Up</button>
         </div>
+        
       </div>
     </div>
   </div>

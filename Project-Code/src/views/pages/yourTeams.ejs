@@ -1,44 +1,26 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
 
-
 <main>
-    <div class="container text-center  style="padding-bottom:10vh"">
-        <h1 style="padding-top:2vh"> Your Teams </h1>
-        <h6 style="color:#949494">Click on a team to view the team details</h6>
-        <div style="padding-bottom:20vh">
+  <div class="container text-center"  style="padding-bottom:10vh;">
+    <h1 style="padding-top:2vh;">Your Teams</h1>
+    <h6 style="color:#949494;">Click on a team to view the team details</h6>
 
-          <% if(teams.length == 0) {  %>
-            <h4 style="padding-top:5vh;color:#ff8a8a">You have not joined any teams yet. <br>Join teams by going to the <a href="/sports"> sports</a> page.</h4>
-<% } %>
+    <div style="padding-bottom:20vh;">
+      <% if(teams.length == 0) { %>
+        <h4 style="padding-top:5vh;color:#ff8a8a;">You haven't joined any teams yet.<br>Join teams by going to the<a href="/sports"> sports </a>page.</h4>
+      <% } %>
 
-        <% teams.forEach(function(team){ %>
-
-
-
-            
-            <form action="/team" method="GET">
-                <input class="form-control" name="teamid" id="teamid" value="<%= team.teamid%>" type="hidden">
-                <div style="padding-top:3vh">
-                  <button style="background-color:#1e90ff; color:white; " class="btn rounded-pill"  >
-                    <%= team.teamname  %> (ID: <%= team.teamid %>)
-                    
-                  </button>
-                </div>
-            </form>
-
-        <% }); %>
-      </div>
-
-
-
-
-
+      <% teams.forEach(function(team) { %>
+        <form action="/team" method="GET">
+          <input class="form-control" name="teamid" id="teamid" value="<%= team.teamid %>" type="hidden">
+          <div style="padding-top:3vh;">
+            <button style="background-color:#1e90ff;color:white;" class="btn rounded-pill"><%= team.teamname %> (ID: <%= team.teamid %>)</button>
+          </div>
+        </form>
+      <% }); %>
     </div>
-
-
-
+  </div>
 </main>
-
 
 <%- include ('../partials/footer') %>
