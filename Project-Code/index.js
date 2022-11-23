@@ -7,6 +7,7 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const e = require('express');
 const nodemailer = require('nodemailer');
+const { INSPECT_MAX_BYTES } = require('buffer');
 const log = console.log;
 
 // database configuration
@@ -524,7 +525,7 @@ app.get("/players", (req, res) => {
 
 app.get("/searchPlayers", (req, res) => {
   const q = req.query.q;
-  db.any(`SELECT * FROM players WHERE  username LIKE '${q}%' OR playerName LIKE '${q}%'`)
+  db.any(`SELECT * FROM players WHERE  username LIKE '${q}%' OR playerName LIKE '${q}%' OR playerID IN(SELECT playerID FROM teamsToPlayers WHERE teamID IN(SELECT teamID FROM teamsToSports WHERE sportID IN(SELECT sportID FROM sports WHERE LOWER(sportName) LIKE '${q}%' OR sportName LIKE '${q}%'))) OR playerID IN(SELECT playerID FROM teamsToPlayers WHERE teamID IN(SELECT teamID FROM teams WHERE LOWER(teamName) LIKE '${q}%' OR teamName LIKE '${q}%'));`)
     .then((players) => {
       if(players.length == 0) {
         db.any(`SELECT * FROM players WHERE classYear = ${q} OR playerid = ${q};`)
