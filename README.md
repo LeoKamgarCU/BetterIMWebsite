@@ -14,9 +14,10 @@ How to run locally:
 - Download and open Docker Desktop
 - Open/clone repository and navigate to 'Project-Code" directory
 - Add a .env file to the 'Project-Code' directory
+  - Contact one of us for .env details. This is private information and is not pushed to GitHub.
 - Run 'docker compose up'
 - Navigate to localhost:3000 in a web browser
 
 How to run tests: N/A. All testing will be done manually.
 
-Deployed link:
+Deployed link: 
