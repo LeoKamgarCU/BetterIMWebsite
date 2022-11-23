@@ -9,7 +9,6 @@ const e = require('express');
 const nodemailer = require('nodemailer');
 const log = console.log;
 
-// database configuration
 const dbConfig = {
   host: 'db',
   port: 5432,
@@ -20,11 +19,10 @@ const dbConfig = {
 
 const db = pgp(dbConfig);
 
-// test your database
 db.connect()
   .then(obj => {
-    console.log('Database connection successful'); // you can view this message in the docker compose logs
-    obj.done(); // success, release the connection;
+    console.log('Database connection successful'); 
+    obj.done(); 
   })
   .catch(error => {
     console.log('ERROR:', error.message || error);
@@ -83,8 +81,6 @@ app.post("/register", async (req, res) => {
   }
   const hash = await bcrypt.hash(req.body.password, 10);
 
- 
-
   var gender = req.body.gender;
   if (!gender) {
     gender = 'Other/Prefer not to say';
@@ -115,7 +111,6 @@ app.post("/register", async (req, res) => {
 app.get("/forgotPassword", (req,res)=>{ 
   return res.render("./pages/forgotPassword")
 });
-
 
 app.post("/forgotPassword", (req,res)=>{ 
   const email = req.body.email;
@@ -211,7 +206,6 @@ app.get("/about", (req, res) => {
   return res.render("./partials/about");
 });
 
-
 app.get("/sports", (req, res) => {
   const all_sports = `SELECT * FROM sports ORDER BY sportName ASC;`;
   db.any(all_sports)
@@ -244,8 +238,6 @@ app.get("/sports", (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
-
-
   return res.render("./pages/profile", { user: req.session.user });
 });
 
@@ -296,7 +288,6 @@ app.get("/team/view/:teamID", (req, res) => {
       })
 
 })
-
 
 app.post("/team/join", (req, res) => {
   const query = `INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);`
@@ -378,19 +369,10 @@ app.post("/editProfile", (req, res) => {
     });
 });
 
-
-
 app.get("/logout", (req, res) => {
   req.session.destroy();
   return res.render("pages/login", { error: false, message: 'Successfully logged out.' });
 });
-
-
-
-
-
-
-
 
 app.get("/yourUpcomingGames", (req, res) => {
   const checkOnTeam = `SELECT * FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid};`;
@@ -499,13 +481,10 @@ app.get("/yourTeams", (req, res) => {
   });
 });
 
-
-
 app.get("/players", (req, res) => {
   db.any(`SELECT * FROM players ORDER BY playerID ASC;`)
   .then((players) => {
     return res.render("./pages/players", {players,user: req.session.user });
-
   })
   .catch((err) => {
     return res.render("./pages/players", {
@@ -517,10 +496,17 @@ app.get("/players", (req, res) => {
   });
 });
 
-
 app.get("/searchPlayers", (req, res) => {
   const q = req.query.q;
-  db.any(`SELECT * FROM players WHERE  username LIKE '${q}%' OR playerName LIKE '${q}%' OR playerID IN(SELECT playerID FROM teamsToPlayers WHERE teamID IN(SELECT teamID FROM teamsToSports WHERE sportID IN(SELECT sportID FROM sports WHERE LOWER(sportName) LIKE '${q}%' OR sportName LIKE '${q}%'))) OR playerID IN(SELECT playerID FROM teamsToPlayers WHERE teamID IN(SELECT teamID FROM teams WHERE LOWER(teamName) LIKE '${q}%' OR teamName LIKE '${q}%'));`)
+  db.any(`SELECT * FROM players WHERE 
+          LOWER(gender) LIKE '${q}%' 
+          OR gender LIKE '${q}%' 
+          OR LOWER(username) LIKE '${q}%' 
+          OR username LIKE '${q}%' 
+          OR LOWER(playerName) LIKE '${q}%'
+          OR playerName LIKE '${q}%' 
+          OR playerID IN(SELECT playerID FROM teamsToPlayers WHERE teamID IN(SELECT teamID FROM teamsToSports WHERE sportID IN(SELECT sportID FROM sports WHERE LOWER(sportName) LIKE '${q}%' OR sportName LIKE '${q}%'))) 
+          OR playerID IN(SELECT playerID FROM teamsToPlayers WHERE teamID IN(SELECT teamID FROM teams WHERE LOWER(teamName) LIKE '${q}%' OR teamName LIKE '${q}%'));`)
     .then((players) => {
       if(players.length == 0) {
         db.any(`SELECT * FROM players WHERE classYear = ${q} OR playerid = ${q};`)
@@ -562,7 +548,6 @@ app.get("/searchPlayers", (req, res) => {
     });
 });
 
-
 app.get("/player", (req, res) => {
   db.any(`SELECT * FROM players WHERE playerid = ${req.query.playerid} LIMIT 1;`)
   .then((player) => {
@@ -579,10 +564,6 @@ app.get("/player", (req, res) => {
           user: req.session.user 
         });
       });
-
-
-    
-
   })
   .catch((err) => {
     return res.render("./pages/player", {
@@ -594,7 +575,6 @@ app.get("/player", (req, res) => {
     });
   });
 });
-
 
 app.get("/changePassword", (req, res) => {
   return res.render("./pages/changePassword", { user: req.session.user });
@@ -615,8 +595,6 @@ app.post("/changePassword", async (req, res) => {
     return res.render("./pages/changePassword", {error: true, message: 'New password cannot be current password.',user: req.session.user })
   }
 
-  
-  
   const newHash = await bcrypt.hash(req.body.newPassword, 10);
   db.one(`UPDATE players SET password = '${newHash}' WHERE playerID = ${req.session.user.playerid} RETURNING playerID;`)
   .then((playerID) => {
@@ -635,24 +613,13 @@ app.post("/changePassword", async (req, res) => {
     console.log(err);
     return res.render("./pages/changePassword", { user: req.session.user, error: true, message: 'Failed to change password.',user: req.session.user  });
   });
-
-
-
-
 });
-
-
 
 // End Routing
 
-
-
-
-
-
 app.use((req, res, next) => {
   res.status(404).send(
-    '<h1 style="text-align: center;padding-top:48vh;padding-bottom:48vh">404</h1>')
+    '<h1 style="text-align: center">404</h1>')
 })
 
 app.listen(3000);
