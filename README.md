@@ -20,4 +20,4 @@ How to run locally:
 
 How to run tests: N/A. All testing will be done manually.
 
-Deployed link: 
+Deployed link: Not deployed online currently.
