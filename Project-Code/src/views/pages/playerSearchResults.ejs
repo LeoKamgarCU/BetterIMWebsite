@@ -1,0 +1,63 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>    
+    <div class="container text-center" style="padding-bottom:17vh;">
+        <h1 style="padding-top:2vh;padding-bottom:1vh;">Search Results</h1>
+
+        <% if(players && playersInt) { %>
+            <p><i><%= players.length + playersInt.length %> player<%- (players.length + playersInt.length == 1) ? '' : 's' %> found</i></p>
+        <% } else if(players) { %>
+            <p><i><%= players.length %> player<%- (players.length == 1) ? '' : 's' %> found</i></p>
+        <% } else if(playersInt) { %>
+            <p><i><%= playersInt.length %> player<%- (playersInt.length == 1) ? '' : 's' %> found</i></p>
+        <% } else { %>
+            <p><i>0 players found</i></p>
+        <% } %>
+
+        <form action="/searchPlayers" method="GET">
+            <div class="input-group mb-3 mx-auto" style="width:42vw;">
+                <input  type="text" class="form-control" name="q" id="q" placeholder="Search by player ID, username, name, class year, gender, sport, or team" aria-label="query" aria-describedby="basic-addon1">
+                <button class="btn" type="submit"><img src="./img/searchIcon.png" style="width:5vh;"></button>
+            </div>
+        </form>
+
+        <%- include ('../partials/message') %>
+
+        <div class="row">
+            <% players.forEach(function(player) { %>
+                <div class="col-md-2" style="padding-top:2vh;">
+                    <form action="/player" method="GET">
+                        <input class="form-control" name="playerid" id="playerid" value="<%= player.playerid %>" type="hidden">
+                        <button style="background-color:#1e90ff; color:white;" class="btn rounded-pill">
+                            <% if(player.profilephoto !== '') { %>
+                                <img src="<%= player.profilephoto %>" style="width:20px;height:20px;border-radius:50%;">
+                            <% } else { %>
+                                <img src="./img/defaultIcon.png" style="width:20px;height:20px;border-radius:50%;">
+                            <% } %>
+                            <%= player.playername %>
+                        </button>
+                    </form>
+                </div>
+            <% }); %>
+
+            <% playersInt.forEach(function(player){ %>
+                <div class="col-md-2" style="padding-top:2vh;">
+                    <form action="/player" method="GET">
+                        <input class="form-control" name="playerid" id="playerid" value="<%= player.playerid %>" type="hidden">
+                        <button style="background-color:#1e90ff; color:white; " class="btn rounded-pill"  >
+                            <% if(player.profilephoto !== '') { %>
+                                <img src="<%= player.profilephoto %>" style="width:20px;height:20px;border-radius:50%;">
+                            <% } else { %>
+                                <img src="./img/defaultIcon.png" style="width:20px;height:20px;border-radius:50%;">
+                            <% } %>
+                            <%= player.playername %>
+                        </button>
+                    </form>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</main>
+
+<%- include ('../partials/footer') %>

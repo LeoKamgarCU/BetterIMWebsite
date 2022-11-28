@@ -1,38 +1,48 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <img src="./img/logo.png" style="width:10%;margin-left:0;">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
+
+    <div class="collapse navbar-collapse" id="navbarNav" style="padding-left:2vw;padding-top:1vh;">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item dropdown">
-          <a style="color:black;font-weight:bold" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="true"> 
-            Explore
-          </a>
-          <ul class="dropdown-menu " style="max-width:10px">
-            <li><a class="dropdown-item" href="/yourUpcomingGames">Games</a></li>
-            <li><a class="dropdown-item" href="/sports">Sports</a></li>
-            <li><a class="dropdown-item" href="/myTeams">My Teams</a></li>
-            <li><a class="dropdown-item" href="#">Players</a></li>
-            <li><a class="dropdown-item" href="/faq">FAQ</a></li>
-            
-          </ul>
-        </li>
+        <ul class="navbar-nav">
+
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/yourUpcomingGames">Games</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" href="/yourTeams">Your Teams</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" href="/sports">Sports</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link active" href="/players">Players</a>
+          </li>
+        </ul>
       </ul>
 
       <ul class="navbar-nav">
-
         <li class="nav-item dropdown">
-          <a  style="color:black;font-weight:bold" class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">Profile
+          <a style="color:black;font-weight:bold;" class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span style="padding-right:1vh;">
+              <% if(user.profilephoto !== '') { %>
+                <img src="<%= user.profilephoto %>" style="width:30px;height:30px;border-radius:50%;">
+              <% } else { %>
+                <img src="./img/defaultIcon.png" style="width:30px;height:30px;border-radius:50%;">
+              <% } %>
+            </span>
+            <%= user.username %>
           </a> 
-        
+
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
             <li><a class="dropdown-item" href="/profile">Profile</a></li>
-            <li><a class="dropdown-item" href="/messages">Messages</a></li>
-            <li><a action="/logout" method="POST" href="/logout" class="dropdown-item" >Log out</a></li>
+            <li><a class="dropdown-item" href="/logout">Log out</a></li>
           </ul>
         </li>
       </ul>

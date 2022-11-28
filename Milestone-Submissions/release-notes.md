@@ -52,3 +52,21 @@
 * @Theobragstad made their first contribution in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/39
 
 **Full Changelog**: https://github.com/LeoKamgarCU/BetterIMWebsite/compare/v1.0...v2.0.0
+
+
+# Week 4 Release
+## What's Changed
+* 62 add sport descriptions and number of teams per sport by @zach2898 in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/64
+* 60 joincreate team api db interaction non functional by @LeoKamgarCU in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/65
+* Profile photo should be working now, it is stored as a link rather th… by @Theobragstad in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/66
+* Fixed href issues with Sports with whitespace in name by @LeoKamgarCU in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/69
+* Reconstructed get teams api, reupdated teams page to include captain … by @zach2898 in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/71
+* Created FAQ page by @japa2103 in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/72
+* My Teams Page by @Theobragstad in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/73
+* Players page features by @Theobragstad in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/75
+* Change password working by @Theobragstad in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/77
+* Added password reset feature, phone number, gender, other minor changes by @Theobragstad in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/79
+* Reworked Game Display Pages, and added winner display functionality by @LeoKamgarCU in https://github.com/LeoKamgarCU/BetterIMWebsite/pull/81
+
+
+**Full Changelog**: https://github.com/LeoKamgarCU/BetterIMWebsite/compare/2.1...v3.0.0

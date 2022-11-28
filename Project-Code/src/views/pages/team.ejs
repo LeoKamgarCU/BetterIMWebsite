@@ -2,10 +2,69 @@
 <%- include ('../partials/menu') %>
 
 <main>
-<div class="col">
-    <%- include ('../partials/message') %>
-</div>
+    <div class="col">
+        <%- include ('../partials/message') %>
+    </div>
+    <div class="container text-center p-4" >
     <h1><%= team.teamname %></h1>
+</div>
+
+<div class="container text-center p-4" style = "position: absolute; right: 200px;top: 200px;width: 30%;">
+    <h3>Record</h3>
+    <p class="text"><b>W/L: </b><%=numWinners.count%>/<%=teamGames.length-numWinners.count%>
+        <!-- Maybe add description to sports db? eg. sport.description -->
+      </p>
+
+</div>
+    <div class="container text-center p-4" style = "position: absolute; right: 200px;top: 300px;width: 30%;">
+        <h3>Players</h3>
+    <table class="table">
+        <thead>
+          <th scope="row"> Player Name </th>
+          <td></td>
+        </thead>
+        <tbody>
+          <%players.forEach(function(player, index){%>
+            <tr>
+              <th scope="row">
+                <%= player.playername%>
+              </th>
+              <td>
+                <% if(teamsToCaptains.playerid == player.playerid){%>
+                    Captain
+                <%}%>
+              </td>
+
+            </tr>
+            <% }); %>
+
+        </tbody>
+      </table>
+    </div>
+    <div class="container text-center p-4" style = "position: absolute; left: 200px;top: 200px;width: 30%;">
+        <h3>Games</h3>
+        <%teamGames.forEach(function(game, index){%>
+        <div class="row p-2">
+            <div class="card bg-light h-100">
+                <div class="card-header"><h5>Game</h5></div>
+                <div class="card-body d-flex flex-column">
+                  <div class="container mt-auto">
+                    <p class="card-text"><b>Game Date:</b> <%= game.gamedate.getMonth()+1 %>-<%= game.gamedate.getDate() %>-<%= game.gamedate.getFullYear() %>
+                      <!-- Use teamsToSports db table -->
+                    </p>
+                    <p class="card-text"><b>Game Time:</b> <%= game.time.substring(0,5) %>
+                        <!-- Maybe add description to sports db? eg. sport.description -->
+                      </p>
+                    <p class="card-text"><b>Game Location:</b> <%= game.location %>
+                      <!-- Maybe add description to sports db? eg. sport.description -->
+                    </p>
+                    <p class="card-text"></p>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <%})%>
+    </div>
 </main>
 
 <%- include ('../partials/footer') %>

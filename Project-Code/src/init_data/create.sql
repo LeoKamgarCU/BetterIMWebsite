@@ -5,7 +5,10 @@ CREATE TABLE players (
     password VARCHAR(100) NOT NULL,
     classYear SMALLINT NOT NULL,
     profilePhoto TEXT NOT NULL,
-    joinDate DATE NOT NULL
+    joinDate DATE NOT NULL,
+    email TEXT UNIQUE,
+    phone TEXT,
+    gender TEXT NOT NULL
 );
 
 CREATE TABLE messages(
@@ -56,5 +59,8 @@ CREATE TABLE teamsToCaptains (
     playerID INT NOT NULL REFERENCES players(playerID)
 );
 
-
+CREATE TABLE gamesToWinners (
+    gameID INT NOT NULL REFERENCES games(gameID),
+    teamID INT NOT NULL REFERENCES teams(teamID)
+);
 
