@@ -238,6 +238,304 @@ app.post("/register", async (req, res) => {
 });
 
 
+<<<<<<< Updated upstream
+=======
+app.post("/forgotPassword", (req, res) => {
+  const email = req.body.email;
+
+  const resetCode = Math.floor(100000 + Math.random() * 900000);
+
+  db.any(`SELECT * FROM players WHERE email = '${email}';`)
+    .then((rows) => {
+      if (rows.length == 0) {
+        return res.render("./pages/forgotPassword", { error: 1, message: 'That email is not associated with an account.' })
+      }
+
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: 'true',
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.EMAIL_PWD_MAC || process.env.EMAIL_PWD_WINDOWS || process.env.EMAIL_PWD_IPHONE || process.env.EMAIL_PWD_IPAD
+        },
+        tls: {
+          rejectUnauthorized: false
+        }
+      });
+
+      let mailOptions = {
+        from: 'improved.notifications@gmail.com',
+        to: email,
+        subject: 'IMProved Password Reset Code',
+        text: 'Your password reset code is: ' + resetCode.toString() + '. If you did not request this code, ignore this email.'
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return console.log(error);
+        }
+        console.log('Message sent: %s', info.messageId);
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        transporter.close();
+      });
+      return res.render("./pages/resetPassword", { email, resetCode, error: false, message: 'Code sent successfully to ' + email });
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.render("./pages/resetPassword", { email, resetCode, error: true, message: 'An error occurred.' });
+    })
+});
+
+app.post("/resetPassword", async (req, res) => {
+  if (req.body.inputCode !== req.body.resetCode) {
+    return res.render('./pages/resetPassword', { resetCode: req.body.resetCode, email: req.body.email, error: true, message: 'Wrong code.' });
+  }
+  if (req.body.newPassword !== req.body.confirmNewPassword) {
+    return res.render('./pages/resetPassword', { resetCode: req.body.resetCode, email: req.body.email, error: true, message: 'New passwords do not match.' });
+  }
+  else {
+    const hash = await bcrypt.hash(req.body.newPassword, 10);
+    db.one(`UPDATE players SET password = '${hash}' WHERE email = '${req.body.email}' RETURNING playerID;`)
+      .then((playerID) => {
+        db.one("SELECT * FROM players WHERE playerID = $1", [playerID.playerid])
+          .then((user) => {
+            req.session.user = user;
+            req.session.save();
+            return res.render("./pages/login", { user: req.session.user, error: false, message: 'Password reset successfully.' });
+          })
+          .catch((err) => {
+            console.log(err);
+            return res.render("./pages/login", { user: req.session.user, error: true, message: 'An error occurred.' });
+          })
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.render("./pages/login", { user: req.session.user, error: true, message: 'An error occurred.' });
+      })
+  }
+});
+
+// Authentication Middleware.
+const auth = (req, res, next) => {
+  if (!req.session.user) {
+    // Default to register page.
+    return res.redirect('/login');
+  }
+  next();
+};
+
+// Authentication Required
+app.use(auth);
+
+
+app.get("/about", (req, res) => {
+  return res.render("./partials/about");
+});
+
+app.get("/sports", (req, res) => {
+  const all_sports = `SELECT * FROM sports ORDER BY sportName ASC;`;
+  db.any(all_sports)
+    .then((sports) => {
+      console.log(sports)
+      db.any(`SELECT * FROM teamsToSports;`)
+        .then((teamsToSports) => {
+          console.log(teamsToSports)
+          res.render("./pages/sports", {
+            sports,
+            teamsToSports,
+            user: req.session.user
+          });
+        })
+        .catch((err) => {
+          res.render("./pages/home", {
+            error: true,
+            message: "No sports found in database.",
+            user: req.session.user
+          });
+        });
+    })
+    .catch((err) => {
+      res.render("./pages/home", {
+        error: true,
+        message: "No sports found in database.",
+        user: req.session.user
+      });
+    });
+});
+
+app.get("/profile", (req, res) => {
+  return res.render("./pages/profile", { user: req.session.user });
+});
+
+app.get("/editProfile", (req, res) => {
+  return res.render("./pages/editProfile", { user: req.session.user });
+});
+
+app.get("/teams/:sportName", (req, res) => {
+  const sportName = req.params.sportName;
+
+  db.tx(t => {
+    // creating a sequence of transaction queries:
+    const teams = t.any('SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToSports WHERE sportID = (SELECT sportID FROM sports WHERE sportName = $1));', [sportName]);
+    const sportID = t.one('SELECT sportID FROM sports WHERE sportName = $1;', [sportName])
+    const teamsToPlayers = db.any(`SELECT * FROM teamsToPlayers;`)
+    const teamsToCaptains = db.any(`SELECT * FROM teamsToCaptains`)
+    const playerName = db.any(`SELECT playerName,playerID  FROM players`)
+
+    // returning a promise that determines a successful transaction:
+    return t.batch([teams, sportID, teamsToPlayers, teamsToCaptains, playerName]); // all of the queries are to be resolved;
+  })
+    .then(data => {
+      // success, COMMIT was executed
+      return res.render("./pages/teams", {
+        teams: data[0],
+        sportID: data[1].sportid,
+        teamsToPlayers: data[2],
+        teamsToCaptains: data[3],
+        playerNames: data[4],
+        user: req.session.user
+      });
+    })
+    .catch(err => {
+      // failure, ROLLBACK was executed
+      console.log(err);
+
+      return res.render("./pages/sports", { message: "Error Occured In Team Query", error: 1, user: req.session.user })
+    });
+});
+
+app.get("/team", (req, res) => {
+  db.one("SELECT * FROM teams WHERE teamID=$1", [req.query.teamid])
+
+
+    .then((team) => {
+      return res.render("./pages/team", { team: team, user: req.session.user })
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.redirect("/sports");
+      // return res.render("./pages/sports", { message: "Team does not exist", error: 1, user: req.session.user })
+    })
+
+
+})
+
+app.post("/team/join", (req, res) => {
+  const query = `INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);`
+  db.any(query, [req.session.user.playerid, req.body.teamid])
+    .then(() => {
+      db.one("SELECT * FROM teams WHERE teamID=$1", [req.body.teamid])
+        .then((team) => {
+          console.log("team:" + team.teamname);
+          return res.render(`./pages/team`, { team: team, error: false, message: 'Successfully joined team.', user: req.session.user });
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.render(`./pages/sports`, { error: true, message: 'Unable to find team.', user: req.session.user });
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.render("./pages/teams", { error: true, message: 'Unable to join team.', user: req.session.user });
+    });
+});
+
+app.post("/team/create", (req, res) => {
+  const sportID = req.body.sportID;
+  const teamInsertQuery = 'INSERT INTO teams (teamName) VALUES ($1) RETURNING teamID';
+  const teamRelationInsertQuery = 'INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);INSERT INTO teamsToCaptains (playerID, teamID) VALUES ($1, $2);INSERT INTO teamsToSports (teamID, sportID) VALUES ($2, $3);';
+  db.any(teamInsertQuery, [req.body.teamName])
+    .then((teamID) => {
+      db.none(teamRelationInsertQuery, [req.session.user.playerid, teamID[0].teamid, sportID])
+        .then(() => {
+          db.one('SELECT * FROM teams where teamID = $1', [teamID[0].teamid])
+            .then((team) => {
+              return res.render("./pages/team", { team: team, user: req.session.user });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res.render(`./pages/sports`, { error: true, message: 'Unable to find team.', user: req.session.user });
+            })
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.render(`./pages/sports`, { error: true, message: 'Unable to add team relations', user: req.session.user });
+        })
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.render("./pages/teams", { error: true, message: 'Unable to create team.', user: req.session.user });
+    })
+});
+
+
+app.post("/allGames/create", (req, res) => {
+
+  const gameInsertQuery = 'INSERT INTO games (gameDate, time, location) VALUES ($1,$2,$3) RETURNING gameID';
+  const gameRelationInsertQuery = `INSERT INTO teamsToGames (gameID, teamID) VALUES ($1, $2);INSERT INTO teamsToGames (gameID, teamID) VALUES ($1, $3);`
+  db.any(gameInsertQuery, [req.body.gameDate, req.body.gameTime, req.body.gameLocation])
+    .then((data) => {
+      db.none(gameRelationInsertQuery, [data[0].gameid, req.body.teamid1, req.body.teamid2])
+        .then(() => {
+          return res.render(`./pages/createSuccess`, {
+            user: req.session.user,
+            playerID: req.session.user.playerid,
+            error: false, message: 'Game successfully created.'
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.render(`./pages/createSuccess`, {user: req.session.user, playerID: req.session.user.playerid, error: true, message: 'Unable to add game relations.' });
+        })
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.render("./pages/createSuccess", { playerID: req.session.user.playerid, error: true, message: 'Unable to create game.' });
+    })
+});
+
+app.post("/edit_profile", (req, res) => {
+
+  console.log(req.session.user);
+  var year = req.body.classyear;
+  if (!year || year == 'Other/NA') {
+    year = 0;
+  }
+
+  var email = req.body.email;
+  if (!email) {
+    email = null;
+  }
+
+  db.one("UPDATE players SET username = $1, playerName = $2, classYear = $3, profilePhoto = $4, email = $5, phone = $6 WHERE playerID = $7 RETURNING playerID;",
+    [req.body.username, req.body.playername, year, req.body.profilephotolink, email, req.body.phone, req.session.user.playerid])
+    .then((playerID) => {
+      db.one("SELECT * FROM players WHERE playerID = $1", [playerID.playerid])
+        .then((user) => {
+          req.session.user = user;
+          req.session.save();
+
+          return res.render("pages/profile", { user: req.session.user, error: false, message: 'Profile updated successfully.' });
+
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.render("pages/profile", { user: req.session.user });
+        })
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.render("pages/profile", { user: req.session.user, error: true, message: 'Error. That username or email is already registered with another account (or your input was too long).' });
+    });
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  return res.render("pages/login", { error: false, message: 'Successfully logged out.' });
+});
+>>>>>>> Stashed changes
 
 app.get("/yourUpcomingGames", (req, res) => {
   const checkOnTeam = `SELECT * FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid};`;
