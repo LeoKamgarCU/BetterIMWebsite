@@ -273,6 +273,7 @@ app.get("/teams/:sportName", (req, res) => {
     .catch(err => {
       // failure, ROLLBACK was executed
       console.log(err);
+
       return res.render("./pages/sports", { message: "Error Occured In Team Query", error: 1 ,user: req.session.user })    
     });
 });
@@ -280,12 +281,14 @@ app.get("/teams/:sportName", (req, res) => {
 app.get("/team/view/:teamID", (req, res) => {
   db.one("SELECT * FROM teams WHERE teamID=$1", [req.params.teamID])
 
+
       .then((team) => {
         return res.render("./pages/team", { team: team ,user: req.session.user })
       })
       .catch((err) => {
         return res.render("./pages/sports", { message: "Team does not exist", error: 1 ,user: req.session.user })
       })
+
 
 })
 
@@ -337,7 +340,33 @@ app.post("/team/create", (req, res) => {
     })
 });
 
-app.post("/editProfile", (req, res) => { 
+
+app.post("/allGames/create", (req, res) => {
+
+  const gameInsertQuery = 'INSERT INTO games (gameDate, time, location) VALUES ($1,$2,$3) RETURNING gameID';
+  const gameRelationInsertQuery = `INSERT INTO teamsToGames (gameID, teamID) VALUES ($1, $2);INSERT INTO teamsToGames (gameID, teamID) VALUES ($1, $3);`
+  db.any(gameInsertQuery, [req.body.gameDate, req.body.gameTime, req.body.gameLocation])
+    .then((data) => {
+      db.none(gameRelationInsertQuery, [data[0].gameid, req.body.teamid1, req.body.teamid2])
+        .then(() => {
+          return res.render(`./pages/createSuccess`, {
+            playerID: req.session.user.playerid,
+            error: false, message: 'Game successfully created.'
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.render(`./pages/createSuccess`, { playerID: req.session.user.playerid, error: true, message: 'Unable to add game relations.' });
+        })
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.render("./pages/createSuccess", { playerID: req.session.user.playerid, error: true, message: 'Unable to create game.' });
+    })
+});
+
+app.post("/edit_profile", (req, res) => {
+
   console.log(req.session.user);
   var year = req.body.classyear;
   if(!year || year == 'Other/NA') {
@@ -356,7 +385,9 @@ app.post("/editProfile", (req, res) => {
         .then((user) => {
           req.session.user = user;
           req.session.save();
+
           return res.render("pages/profile", { user: req.session.user, error: false, message: 'Profile updated successfully.' });
+
         })
         .catch((err) => {
           console.log(err);
@@ -434,10 +465,13 @@ app.get("/allUpcomingGames", (req, res) => {
 
 app.get("/allGames", (req, res) => {
   db.tx(t => {
+
+
+    const sports = db.any(`SELECT * FROM sports ORDER BY sportName ASC;`);
     const gamesQuery = t.any(`SELECT * FROM games INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID INNER JOIN teamsToSports ON teamsToGames.teamID = teamsToSports.teamID INNER JOIN sports ON teamsToSports.sportID = sports.sportID INNER JOIN teams ON teamsToSports.teamID = teams.teamID ORDER BY games.gameID;`);
     const winnersQuery = t.any(`SELECT * FROM gamesToWinners;`);
     
-    return t.batch([gamesQuery, winnersQuery]);
+    return t.batch([gamesQuery, winnersQuery, sports]);
   })
     .then(data => {
       const allGames = data[0];
@@ -468,13 +502,38 @@ app.get("/allGames", (req, res) => {
         gameData.push(gameObject);
         console.log(gameObject);
       }
-      return res.render("./pages/allGames", { games: gameData, user: req.session.user });
+      return res.render("./pages/allGames", { games: gameData, user: req.session.user, sports: data[2]});
     })
     .catch(err => {
       console.log(err);
-      return res.render("./pages/allGames", { games: [], user: req.session.user, error: true, message: err.message });
+      return res.render("./pages/allGames", { games: [], user: req.session.user, error: true, message: err.message, sports:[]});
     });
+  });
 });
+
+app.post("/gameCreate", (req, res) => {
+  db.tx(t => {
+    const teams = db.any(`SELECT * FROM teams ORDER BY teamName ASC;`);
+    const teamsToSports = db.any(`SELECT * FROM teamsToSports;`); 
+    return t.batch([teams, teamsToSports]); // all of the queries are to be resolved;
+  })
+    .then(data => {
+      res.render("./pages/gameCreate", {
+        playerID: req.session.user.playerid,
+        teams: data[0],
+        teamsToSports: data[1],
+        sportSelect: req.body.sportselect
+      });
+    })
+  .catch((err) => {
+    res.render("./pages/yourUpcomingGames", {
+      playerID: req.session.user.playerid,
+      games: [],
+      error: true,
+      message: err.message,
+      }):
+      });
+      });
 
 app.get("/game", (req, res) => {
   const user = req.session.user;
@@ -528,7 +587,6 @@ app.get("/players", (req, res) => {
       message: err.message,
       user: req.session.user 
     });
-  });
 });
 
 app.get("/searchPlayers", (req, res) => {
