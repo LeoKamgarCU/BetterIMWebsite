@@ -2,9 +2,11 @@
   <%- include ('../partials/menu') %>
 
 <main>
+  <%if(user.playerid < 6){%>
 <button class="btn rounded-pill"
       style="background-color:#1e90ff; color:#ffffff; position: absolute;right: 100px;top:80px"
       data-bs-toggle="modal" data-bs-target="#CreateGame">Create Game</button>
+      <%}%>
       <%- include ('../partials/createGameModal') %>
   <div class="container text-center" style="padding-bottom:10vh;">
     <h1 style="padding-top:2vh; padding-bottom:2vh">All games</h1>
