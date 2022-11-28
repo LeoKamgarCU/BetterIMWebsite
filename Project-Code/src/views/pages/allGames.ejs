@@ -17,12 +17,22 @@
     <% } %>
 
     <% games.forEach(function(game) { %>
-      <form action="/game" method="GET">
-        <input class="form-control" name="gameid" id="gameid" value="<%= game.gameid%>" type="hidden">
-        <div style="padding-top:3vh;">
-          <button class="btn btn-secondary">ID <%= game.gameid %>: <%= game.gamedate.getMonth()+1 %>-<%= game.gamedate.getDate() %>-<%= game.gamedate.getFullYear() %></button>
+      <div class="card text-white bg-dark mb-3 text-center mx-auto d-flex" style="width:25%;">
+        <div class="card-body">
+          <h1 style="padding-top:2vh;">Game Details</h1>
+          <h3 style="color:#1e90ff;"><%= game.team1 %><span style="color:#ffffff;"> - </span><%= game.team2 %></h3>
+          <h5>Sport: <span style="color:#1e90ff;"><%= game.sportname %></span></h5>
+          <h5>Game ID: <span style="color:#1e90ff;"><%= game.gameid %></span></h5> 
+          <h5>Date (mm-dd-yyyy): <span style="color:#1e90ff;"> <%= game.gamedate.getMonth()+1 %>-<%= game.gamedate.getDate() %>-<%= game.gamedate.getFullYear() %></span></h5> 
+          <h5>Time (hh:mm): <span style="color:#1e90ff;"><%= game.time.substring(0,5) %></span></h5> 
+          <h5>Location: <span style="color:#1e90ff;"><%= game.location %></span></h5> 
+          <% if (game.winner === 1) { %>
+            <h5>Winner: <span style="color:#1e90ff;"><%= game.team1 %></span></h5>
+          <% } else if (game.winner === 2) { %>
+            <h5>Winner: <span style="color:#1e90ff;"><%= game.team2 %></span></h5>
+          <% } %>
         </div>
-      </form>
+      </div>
     <% }); %>
   </div>
 </main>

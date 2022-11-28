@@ -59,5 +59,8 @@ CREATE TABLE teamsToCaptains (
     playerID INT NOT NULL REFERENCES players(playerID)
 );
 
-
+CREATE TABLE gamesToWinners (
+    gameID INT NOT NULL REFERENCES games(gameID),
+    teamID INT NOT NULL REFERENCES teams(teamID)
+);
 
