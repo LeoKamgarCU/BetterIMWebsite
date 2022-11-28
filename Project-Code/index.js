@@ -350,13 +350,14 @@ app.post("/allGames/create", (req, res) => {
       db.none(gameRelationInsertQuery, [data[0].gameid, req.body.teamid1, req.body.teamid2])
         .then(() => {
           return res.render(`./pages/createSuccess`, {
+            user: req.session.user,
             playerID: req.session.user.playerid,
             error: false, message: 'Game successfully created.'
           });
         })
         .catch((err) => {
           console.log(err);
-          return res.render(`./pages/createSuccess`, { playerID: req.session.user.playerid, error: true, message: 'Unable to add game relations.' });
+          return res.render(`./pages/createSuccess`, {user: req.session.user, playerID: req.session.user.playerid, error: true, message: 'Unable to add game relations.' });
         })
     })
     .catch((err) => {
@@ -519,6 +520,7 @@ app.post("/gameCreate", (req, res) => {
   })
     .then(data => {
       res.render("./pages/gameCreate", {
+        user: req.session.user,
         playerID: req.session.user.playerid,
         teams: data[0],
         teamsToSports: data[1],
@@ -527,6 +529,7 @@ app.post("/gameCreate", (req, res) => {
     })
     .catch((err) => {
       res.render("./pages/yourUpcomingGames", {
+        user: req.session.user,
         playerID: req.session.user.playerid,
         games: [],
         error: true,
@@ -588,7 +591,7 @@ app.get("/players", (req, res) => {
         user: req.session.user
       });
     });
-
+  });
   app.get("/searchPlayers", (req, res) => {
     const q = req.query.q;
     db.any(`SELECT * FROM players WHERE 
@@ -713,7 +716,7 @@ app.get("/players", (req, res) => {
   app.use((req, res, next) => {
     res.status(404).send(
       '<h1 style="text-align: center">404</h1>')
-  })
+  });
 
   app.listen(3000);
   console.log('Server is listening on port 3000');
