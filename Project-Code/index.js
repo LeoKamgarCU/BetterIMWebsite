@@ -375,69 +375,104 @@ app.get("/logout", (req, res) => {
 });
 
 app.get("/yourUpcomingGames", (req, res) => {
-  const checkOnTeam = `SELECT * FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid};`;
-  const query = `INSERT INTO teamsToPlayers VALUES (1,9); SELECT * FROM games WHERE gameid IN (SELECT gameid FROM teamsToGames WHERE teamsToGames.teamID IN (SELECT teamid FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid}));`;
+  db.tx(t => {
+    const teamsQuery = t.any(`SELECT * FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid};`);
+    const gamesQuery = t.any(`SELECT * FROM games INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID INNER JOIN teamsToSports ON teamsToGames.teamID = teamsToSports.teamID INNER JOIN sports ON teamsToSports.sportID = sports.sportID INNER JOIN teams ON teamsToSports.teamID = teams.teamID WHERE games.gameid IN (SELECT gameid FROM teamsToGames WHERE teamsToGames.teamID IN (SELECT teamid FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid})) ORDER BY games.gameID;`);
 
-  db.any(query)
-    .then((games) => {
-      db.any(checkOnTeam)
-        .then((teams) => {
-          res.render("./pages/yourUpcomingGames", { games, teams ,user: req.session.user });
-        })
-        .catch((err) => {
-          console.log(err);
-          res.render("./pages/yourUpcomingGames", { error: true ,user: req.session.user });
-        });
+    return t.batch([teamsQuery, gamesQuery]);
+  })
+    .then(data => {
+      const gameData = [];
+      for (let i = 0; i < data[1].length; i+=2) {
+        const gameObject = {
+          gameid: data[1][i].gameid,
+          gamedate: data[1][i].gamedate,
+          time: data[1][i].time,
+          location: data[1][i].location,
+          team1: data[1][i].teamname,
+          team2: data[1][i+1].teamname,
+          sportname: data[1][i].sportname
+        };
+        gameData.push(gameObject);
+        console.log(gameObject);
+      }
+      
+      return res.render("./pages/yourUpcomingGames", { teams: data[0], games: gameData, user: req.session.user });
     })
-    .catch((err) => {
+    .catch(err => {
       console.log(err);
-      res.render("./pages/yourUpcomingGames", {
-        games: [],
-        error: true,
-        user: req.session.user 
-      });
+      return res.render("./pages/yourUpcomingGames", { teams: [], games: [], user: req.session.user, error: true, message: "Failed to Retrieve Upcoming Games" });
     });
 });
 
 app.get("/allUpcomingGames", (req, res) => {
-  const query = `SELECT * FROM games ORDER BY gameDate ASC, time ASC;`;
+  const query = `SELECT * FROM games INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID INNER JOIN teamsToSports ON teamsToGames.teamID = teamsToSports.teamID INNER JOIN sports ON teamsToSports.sportID = sports.sportID INNER JOIN teams ON teamsToSports.teamID = teams.teamID ORDER BY games.gameID;`;
 
   db.any(query)
-    .then((games) => {
-      res.render("./pages/allUpcomingGames", {
-        games,
-        user: req.session.user 
-      });
-
+    .then(data => {
+      const gameData = [];
+      for (let i = 0; i < data.length; i+=2) {
+        const gameObject = {
+          gameid: data[i].gameid,
+          gamedate: data[i].gamedate,
+          time: data[i].time,
+          location: data[i].location,
+          team1: data[i].teamname,
+          team2: data[i+1].teamname,
+          sportname: data[i].sportname
+        };
+        gameData.push(gameObject);
+        console.log(gameObject);
+      }
+      return res.render("./pages/allUpcomingGames", { games: gameData, user: req.session.user });
     })
-    .catch((err) => {
-      res.render("./pages/allUpcomingGames", {
-        games: [],
-        error: true,
-        message: err.message,
-        user: req.session.user 
-      });
+    .catch(err => {
+      console.log(err);
+      return res.render("./pages/allUpcomingGames", { games: [], user: req.session.user, error: true, message: err.message });
     });
 });
 
 app.get("/allGames", (req, res) => {
-  const query = `SELECT * FROM games ORDER BY gameDate ASC, time ASC;`;
-
-  db.any(query)
-    .then((games) => {
-      res.render("./pages/allGames", {
-        games,
-        user: req.session.user 
-      });
-
+  db.tx(t => {
+    const gamesQuery = t.any(`SELECT * FROM games INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID INNER JOIN teamsToSports ON teamsToGames.teamID = teamsToSports.teamID INNER JOIN sports ON teamsToSports.sportID = sports.sportID INNER JOIN teams ON teamsToSports.teamID = teams.teamID ORDER BY games.gameID;`);
+    const winnersQuery = t.any(`SELECT * FROM gamesToWinners;`);
+    
+    return t.batch([gamesQuery, winnersQuery]);
+  })
+    .then(data => {
+      const allGames = data[0];
+      const winners = data[1];
+      const gameData = [];
+      for (let i = 0; i < allGames.length; i+=2) {
+        let index = -1;
+        for (let j = 0; j < winners.length; j++) {
+          if (allGames[i].gameid === winners[j].gameid) {
+            index = j;
+            break;
+          }
+        }
+        let winner = 0;
+        if (index !== -1) {
+          winner = (allGames[i].teamid === winners[index].teamid ? 1 : 2);
+        }
+        const gameObject = {
+          gameid: allGames[i].gameid,
+          gamedate: allGames[i].gamedate,
+          time: allGames[i].time,
+          location: allGames[i].location,
+          team1: allGames[i].teamname,
+          team2: allGames[i+1].teamname,
+          sportname: allGames[i].sportname,
+          winner: winner
+        };
+        gameData.push(gameObject);
+        console.log(gameObject);
+      }
+      return res.render("./pages/allGames", { games: gameData, user: req.session.user });
     })
-    .catch((err) => {
-      res.render("./pages/allGames", {
-        games: [],
-        error: true,
-        message: err.message,
-        user: req.session.user 
-      });
+    .catch(err => {
+      console.log(err);
+      return res.render("./pages/allGames", { games: [], user: req.session.user, error: true, message: err.message });
     });
 });
 

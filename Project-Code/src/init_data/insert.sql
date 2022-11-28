@@ -519,3 +519,11 @@ INSERT INTO teamsToCaptains (playerID, teamID) VALUES (21, 17);
 INSERT INTO teamsToCaptains (playerID, teamID) VALUES (27, 18);
 INSERT INTO teamsToCaptains (playerID, teamID) VALUES (38, 19);
 INSERT INTO teamsToCaptains (playerID, teamID) VALUES (2, 20);
+
+INSERT INTO gamesToWinners (gameID, teamID) VALUES (1, 3); -- Players are: Team IDs [1,3] Team Names: [Alpha Sonics, Ghost Piledrivers]
+INSERT INTO gamesToWinners (gameID, teamID) VALUES (2, 6); -- Players are: Team IDs [6,7] Team Names: [Aero Planets, Fire United]
+INSERT INTO gamesToWinners (gameID, teamID) VALUES (3, 12); -- Players are: Team IDs [11,12] Team Names: [Reptile Assassins, Zulu Bulls]
+INSERT INTO gamesToWinners (gameID, teamID) VALUES (4, 14); -- Players are: Team IDs [14,16] Team Names: [Aero Predators, Dolphin Secret Agents]
+INSERT INTO gamesToWinners (gameID, teamID) VALUES (5, 20); -- Players are: Team IDs [19,20] Team Names: [Shaolin Sharpshooters, Kamikaze Chuckers]
+INSERT INTO gamesToWinners (gameID, teamID) VALUES (6, 2); -- Players are: Team IDs [2,4] Team Names: [Venomous Busters, Carnivore Xpress]
+INSERT INTO gamesToWinners (gameID, teamID) VALUES (7, 7); -- Players are: Team IDs [7,8] Team Names: [Fire United, Quicksilver Bullets]
