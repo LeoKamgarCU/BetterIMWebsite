@@ -320,6 +320,27 @@ app.get("/team/:teamID", (req, res) => {
 
 })
 
+// untested because individual team page is broken
+app.get('/team/delete/:teamID', async (req, res) => {
+  const checkTeamCaptain = `SELECT * FROM teamsToCaptains WHERE teamID=$1 AND playerID=$2`
+  try {
+    await db.one(checkTeamCaptain, [req.params.teamID, req.session.user.playerid]);
+  } catch (err) {
+    console.log(err);
+    return res.redirect("/yourTeams");
+  }
+
+  const query = `DELETE FROM teams WHERE teamID=$1;`
+  db.any(query, [req.params.teamID])
+      .then(() => {
+        return res.redirect("/yourTeams");
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.redirect("/yourTeams");
+      })
+})
+
 app.post("/team/join", (req, res) => {
   const query = `INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);`
   db.any(query, [req.session.user.playerid, req.body.teamid])
