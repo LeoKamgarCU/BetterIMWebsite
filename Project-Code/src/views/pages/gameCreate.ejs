@@ -1,0 +1,68 @@
+<%- include ('../partials/header') %>
+  <%- include ('../partials/menu') %>
+ 
+    <main>
+        <form action="/allGames/create" method="POST">
+            <div class="modal fade show d-block" id="CreateGame2" style = "position: absolute;
+            top: 50px;
+            right: 100px;" tabindex="-1">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header text-center">
+                    <h1 class="modal-title fs-3">Create Game</h1>
+                  </div>
+                  <div class="modal-body">
+                    <div class="input-group mb-3">
+                      <label class="input-group-text" for="sport">Select Team 1: </label>
+                      <select class="form-select" name="teamid1" id="teamid1" required>
+                        <option selected disabled value=""></option>
+                        <%
+                        
+                        teamsToSports.forEach(function(t2s, index){ if (t2s.sportid==sportSelect) {
+                          teams.forEach(function(team, index){ if (team.teamid==t2s.teamid) { %>
+                          <option value=<%=team.teamid%>><%=team.teamname%>
+                          </option>
+                          <% } }) } })%>
+                      </select>
+                    </div>
+                    <div class="input-group mb-3">
+                      <label class="input-group-text" for="sport">Select Team 2: </label>
+                      <select class="form-select" name="teamid2" id="teamid2" required>
+                        <option selected disabled value=""></option>
+                        <%teamsToSports.forEach(function(t2s, index){ if (t2s.sportid==sportSelect) {
+                          teams.forEach(function(team, index){ if (team.teamid==t2s.teamid) { %>
+                          <option value=<%=team.teamid%>><%=team.teamname%>
+                          </option>
+                          <% } }) } })%>
+                      </select>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <label class="input-group-text">Select a time:</label>
+                        <input type="time" id="gameTime" name="gameTime">
+                      </div>
+
+                    <div class="input-group mb-3">
+                        <label class="input-group-text">Select a date:</label>
+                        <input type="date"  name="gameDate" id="gameDate"  required>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <label class="input-group-text">Input a Location:</label>
+                        <input type="text" class="form-control" name="gameLocation" id="gameLocation" placeholder="Location" required>
+                    </div>
+
+      
+      
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475">Create
+                      Game</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+    </main>
+
+    <%- include ('../partials/footer') %>
