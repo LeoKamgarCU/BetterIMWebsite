@@ -278,17 +278,39 @@ app.get("/teams/:sportName", (req, res) => {
     });
 });
 
-app.get("/team/view/:teamID", (req, res) => {
-  db.one("SELECT * FROM teams WHERE teamID=$1", [req.params.teamID])
+app.get("/team/:teamID", (req, res) => {
+  db.tx(t => {
+    // creating a sequence of transaction queries:
+    const team = db.one("SELECT * FROM teams WHERE teamID=$1", [req.params.teamID])
+    const teamsToCaptains = db.one(`SELECT * FROM teamsToCaptains  WHERE teamID=$1`, [req.params.teamID])
+    const players = db.any(`SELECT *  FROM players 
+    INNER JOIN teamsToPlayers ON players.playerID = teamsToPlayers.playerID
+    WHERE teamsToPlayers.teamID = $1`, [req.params.teamID])
+    const teamGames = db.any(`SELECT *  FROM games 
+    INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID
+    WHERE teamsToGames.teamID = $1`, req.params.teamID)
+    const numWinners = db.one(`SELECT COUNT(*) FROM gamesToWinners WHERE teamID = $1;`, req.params.teamID)
 
-
-    .then((team) => {
-      return res.render("./pages/team", { team: team, user: req.session.user })
+    // returning a promise that determines a successful transaction:
+    return t.batch([team, teamsToCaptains, players, teamGames, numWinners]); // all of the queries are to be resolved;
+  })
+    .then(data => {
+      // success, COMMIT was executed
+      return res.render("./pages/team", {
+        team: data[0],
+        teamsToCaptains: data[1],
+        players: data[2],
+        teamGames: data[3],
+        numWinners: data[4],
+        user: req.session.user
+      });
     })
-    .catch((err) => {
-      return res.render("./pages/sports", { message: "Team does not exist", error: 1, user: req.session.user })
-    })
+    .catch(err => {
+      // failure, ROLLBACK was executed
+      console.log(err);
 
+      return res.redirect("./pages/sports")
+    });
 
 })
 
@@ -357,7 +379,7 @@ app.post("/allGames/create", (req, res) => {
         })
         .catch((err) => {
           console.log(err);
-          return res.render(`./pages/createSuccess`, {user: req.session.user, playerID: req.session.user.playerid, error: true, message: 'Unable to add game relations.' });
+          return res.render(`./pages/createSuccess`, { user: req.session.user, playerID: req.session.user.playerid, error: true, message: 'Unable to add game relations.' });
         })
     })
     .catch((err) => {
@@ -591,10 +613,10 @@ app.get("/players", (req, res) => {
         user: req.session.user
       });
     });
-  });
-  app.get("/searchPlayers", (req, res) => {
-    const q = req.query.q;
-    db.any(`SELECT * FROM players WHERE 
+});
+app.get("/searchPlayers", (req, res) => {
+  const q = req.query.q;
+  db.any(`SELECT * FROM players WHERE 
           LOWER(gender) LIKE '${q}%' 
           OR gender LIKE '${q}%' 
           OR LOWER(username) LIKE '${q}%' 
@@ -603,22 +625,11 @@ app.get("/players", (req, res) => {
           OR playerName LIKE '${q}%' 
           OR playerID IN(SELECT playerID FROM teamsToPlayers WHERE teamID IN(SELECT teamID FROM teamsToSports WHERE sportID IN(SELECT sportID FROM sports WHERE LOWER(sportName) LIKE '${q}%' OR sportName LIKE '${q}%'))) 
           OR playerID IN(SELECT playerID FROM teamsToPlayers WHERE teamID IN(SELECT teamID FROM teams WHERE LOWER(teamName) LIKE '${q}%' OR teamName LIKE '${q}%'));`)
-      .then((players) => {
-        if (players.length == 0) {
-          db.any(`SELECT * FROM players WHERE classYear = ${q} OR playerid = ${q};`)
-            .then((playersInt) => {
-              if (playersInt.length == 0) {
-                return res.render("./pages/playerSearchResults", {
-                  playersInt: [],
-                  players: [],
-                  error: true,
-                  message: 'No results.',
-                  user: req.session.user
-                });
-              }
-              return res.render("./pages/playerSearchResults", { players: [], playersInt, user: req.session.user });
-            })
-            .catch((err) => {
+    .then((players) => {
+      if (players.length == 0) {
+        db.any(`SELECT * FROM players WHERE classYear = ${q} OR playerid = ${q};`)
+          .then((playersInt) => {
+            if (playersInt.length == 0) {
               return res.render("./pages/playerSearchResults", {
                 playersInt: [],
                 players: [],
@@ -626,97 +637,108 @@ app.get("/players", (req, res) => {
                 message: 'No results.',
                 user: req.session.user
               });
-            });
-        }
-        else {
-          return res.render("./pages/playerSearchResults", { players, playersInt: [], user: req.session.user });
-        }
-
-      })
-      .catch((err) => {
-        return res.render("./pages/playerSearchResults", {
-          playersInt: [],
-          players: [],
-          error: true,
-          message: 'No results.',
-          user: req.session.user
-        });
-      });
-  });
-
-  app.get("/player", (req, res) => {
-    db.any(`SELECT * FROM players WHERE playerid = ${req.query.playerid} LIMIT 1;`)
-      .then((player) => {
-        db.any(`SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToPlayers WHERE playerID = ${player[0].playerid});`)
-          .then((teams) => {
-            return res.render("./pages/player", { player, teams, user: req.session.user });
+            }
+            return res.render("./pages/playerSearchResults", { players: [], playersInt, user: req.session.user });
           })
           .catch((err) => {
-            return res.render("./pages/player", {
-              teams: [],
-              player: [],
+            return res.render("./pages/playerSearchResults", {
+              playersInt: [],
+              players: [],
               error: true,
-              message: err.message,
+              message: 'No results.',
               user: req.session.user
             });
           });
-      })
-      .catch((err) => {
-        return res.render("./pages/player", {
-          teams: [],
-          player: [],
-          error: true,
-          message: err.message,
-          user: req.session.user
+      }
+      else {
+        return res.render("./pages/playerSearchResults", { players, playersInt: [], user: req.session.user });
+      }
+
+    })
+    .catch((err) => {
+      return res.render("./pages/playerSearchResults", {
+        playersInt: [],
+        players: [],
+        error: true,
+        message: 'No results.',
+        user: req.session.user
+      });
+    });
+});
+
+app.get("/player", (req, res) => {
+  db.any(`SELECT * FROM players WHERE playerid = ${req.query.playerid} LIMIT 1;`)
+    .then((player) => {
+      db.any(`SELECT * FROM teams WHERE teamID IN (SELECT teamID FROM teamsToPlayers WHERE playerID = ${player[0].playerid});`)
+        .then((teams) => {
+          return res.render("./pages/player", { player, teams, user: req.session.user });
+        })
+        .catch((err) => {
+          return res.render("./pages/player", {
+            teams: [],
+            player: [],
+            error: true,
+            message: err.message,
+            user: req.session.user
+          });
         });
+    })
+    .catch((err) => {
+      return res.render("./pages/player", {
+        teams: [],
+        player: [],
+        error: true,
+        message: err.message,
+        user: req.session.user
       });
-  });
+    });
+});
 
-  app.get("/changePassword", (req, res) => {
-    return res.render("./pages/changePassword", { user: req.session.user });
-  });
+app.get("/changePassword", (req, res) => {
+  return res.render("./pages/changePassword", { user: req.session.user });
+});
 
-  app.post("/changePassword", async (req, res) => {
-    const currentPassword = req.body.currentPassword;
-    const match = await bcrypt.compare(currentPassword, req.session.user.password);
-    if (!match) {
-      return res.render("./pages/changePassword", { error: true, message: 'Incorrect current password.', user: req.session.user })
-    }
+app.post("/changePassword", async (req, res) => {
+  const currentPassword = req.body.currentPassword;
+  const match = await bcrypt.compare(currentPassword, req.session.user.password);
+  if (!match) {
+    return res.render("./pages/changePassword", { error: true, message: 'Incorrect current password.', user: req.session.user })
+  }
 
-    if (req.body.newPassword !== req.body.confirmNewPassword) {
-      return res.render("./pages/changePassword", { error: true, message: 'New passwords do not match.', user: req.session.user })
-    }
+  if (req.body.newPassword !== req.body.confirmNewPassword) {
+    return res.render("./pages/changePassword", { error: true, message: 'New passwords do not match.', user: req.session.user })
+  }
 
-    if (req.body.newPassword == currentPassword) {
-      return res.render("./pages/changePassword", { error: true, message: 'New password cannot be current password.', user: req.session.user })
-    }
+  if (req.body.newPassword == currentPassword) {
+    return res.render("./pages/changePassword", { error: true, message: 'New password cannot be current password.', user: req.session.user })
+  }
 
-    const newHash = await bcrypt.hash(req.body.newPassword, 10);
-    db.one(`UPDATE players SET password = '${newHash}' WHERE playerID = ${req.session.user.playerid} RETURNING playerID;`)
-      .then((playerID) => {
-        db.one("SELECT * FROM players WHERE playerID = $1", [playerID.playerid])
-          .then((user) => {
-            req.session.user = user;
-            req.session.save();
-            return res.render("./pages/profile", { user: req.session.user, error: false, message: 'Password changed successfully.', user: req.session.user });
-          })
-          .catch((err) => {
-            console.log(err);
-            return res.render("./pages/changePassword", { user: req.session.user, error: true, message: 'Failed to change password.', user: req.session.user });
-          })
-      })
-      .catch((err) => {
-        console.log(err);
-        return res.render("./pages/changePassword", { user: req.session.user, error: true, message: 'Failed to change password.', user: req.session.user });
-      });
-  });
+  const newHash = await bcrypt.hash(req.body.newPassword, 10);
+  db.one(`UPDATE players SET password = '${newHash}' WHERE playerID = ${req.session.user.playerid} RETURNING playerID;`)
+    .then((playerID) => {
+      db.one("SELECT * FROM players WHERE playerID = $1", [playerID.playerid])
+        .then((user) => {
+          req.session.user = user;
+          req.session.save();
+          return res.render("./pages/profile", { user: req.session.user, error: false, message: 'Password changed successfully.', user: req.session.user });
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.render("./pages/changePassword", { user: req.session.user, error: true, message: 'Failed to change password.', user: req.session.user });
+        })
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.render("./pages/changePassword", { user: req.session.user, error: true, message: 'Failed to change password.', user: req.session.user });
+    });
+});
 
-  // End Routing
+// End Routing
 
-  app.use((req, res, next) => {
-    res.status(404).send(
-      '<h1 style="text-align: center">404</h1>')
-  });
+app.use((req, res, next) => {
+  res.status(404).send(
+    '<h1 style="text-align: center">404</h1>')
+});
 
-  app.listen(3000);
-  console.log('Server is listening on port 3000');
+app.listen(3000);
+console.log('Server is listening on port 3000');
