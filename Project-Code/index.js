@@ -37,12 +37,18 @@ app.use(
     secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
     resave: false,
+    cookie: { maxAge: 1200000 }, 
+    rolling: false
   })
 );
 app.use(bodyParser.urlencoded({
   extended: true,
 })
 );
+
+
+
+
 
 // Begin Routing
 
@@ -653,8 +659,7 @@ app.post("/changePassword", async (req, res) => {
 // End Routing
 
 app.use((req, res, next) => {
-  res.status(404).send(
-    '<h1 style="text-align: center">404</h1>')
+    res.status(404).send('<div style="text-align: center"><h1>404</h1><h3>Page not found</h3><h5>Check the URL you entered.</h5></div>');
 })
 
 app.listen(3000);
