@@ -1,6 +1,6 @@
 <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <img src="./img/logo.png" style="width:10%;margin-left:0;">
+    <img src="/img/logo.png" style="width:10%;margin-left:0;">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -34,7 +34,7 @@
               <% if(user.profilephoto !== '') { %>
                 <img src="<%= user.profilephoto %>" style="width:30px;height:30px;border-radius:50%;">
               <% } else { %>
-                <img src="./img/defaultIcon.png" style="width:30px;height:30px;border-radius:50%;">
+                <img src="/img/defaultIcon.png" style="width:30px;height:30px;border-radius:50%;">
               <% } %>
             </span>
             <%= user.username %>

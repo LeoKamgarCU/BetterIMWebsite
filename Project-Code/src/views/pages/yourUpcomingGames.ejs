@@ -7,11 +7,13 @@
   </div>
   <div class="container text-center" style="padding-bottom:10vh;">
     <h1 style="padding-top:2vh;padding-bottom:2vh;">Your upcoming games</h1>
-    <h4 style="color:#949494;">Upcoming games that your team(s) are playing in.</h4>
-    <h6 style="color:#949494;">Click a date below to view the game details</h6>
+    <h6 style="color:#949494;">Upcoming games that your team(s) are playing in.</h6>
     <h6 style="color:#949494;">If there are no games, then all games in the database have passed.</h6>
-
     <div style="padding-top:2vh;">
+      <button class="btn rounded-pill" style="background-color:#d8d8d8;color:#595959;;font-size:.75vw;" data-bs-toggle="modal" data-bs-target="#howToScheduleModal">Game scheduling</button>
+    </div>
+
+    <div style="padding-top:2vh;padding-bottom:3vh;">
       <a href="allUpcomingGames" class="btn rounded-pill" style="background-color:#1e90ff;color:#ffffff;">All upcoming games</a>
       <a href="allGames" class="btn rounded-pill" style="background-color:#1e90ff;color:#ffffff;">All games</a>
 
@@ -23,23 +25,89 @@
       <h4 style="padding-top:5vh;color:#17d475;">You have no upcoming games</h4>
       <% var today = new Date() %>
     <% } else { %>
+
       <% var today = new Date() %>
+      <% var n = 0 %>
+      <% const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] %>
+      <% const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] %>
+
       <% games.forEach(function(game) { %>
         <% if(!((game.gamedate.getFullYear() < today.getFullYear()) || ((game.gamedate.getFullYear() == today.getFullYear()) && (game.gamedate.getMonth() < today.getMonth()))  ||   ((game.gamedate.getFullYear() == today.getFullYear()) && (game.gamedate.getMonth() == today.getMonth()) && (game.gamedate.getDate() < today.getDate())))) { %>
-          <div class="card text-white bg-dark mb-3 text-center mx-auto d-flex" style="width:25%;">
+          <div class="card text-white bg-dark mb-3 text-center mx-auto d-flex" style="width:50%;">
             <div class="card-body">
-              <h1 style="padding-top:2vh;">Game Details</h1>
-              <h3 style="color:#1e90ff;"><%= game.team1 %><span style="color:#ffffff;"> - </span><%= game.team2 %></h3>
-              <h5>Sport: <span style="color:#1e90ff;"><%= game.sportname %></span></h5>
-              <h5>Game ID: <span style="color:#1e90ff;"><%= game.gameid %></span></h5> 
-              <h5>Date (mm-dd-yyyy): <span style="color:#1e90ff;"> <%= game.gamedate.getMonth()+1 %>-<%= game.gamedate.getDate() %>-<%= game.gamedate.getFullYear() %></span></h5> 
-              <h5>Time (hh:mm): <span style="color:#1e90ff;"><%= game.time.substring(0,5) %></span></h5> 
-              <h5>Location: <span style="color:#1e90ff;"><%= game.location %></span></h5> 
+              <h1 style="padding-top:2vh;color:#1e90ff;"><%= weekdays[game.gamedate.getDay()] %> <%= months[game.gamedate.getMonth()] %> <%= game.gamedate.getDate() %></h1>
+              <h5><%= game.gamedate.getFullYear() %></h5>
+              <h3 style="color:#1e90ff;"><%= game.team1 %><span style="color:#ffffff;font-size:1vw;"> vs </span><%= game.team2 %></h3>
+            
+              <div class="row justify-content-center">
+                <h5 class="col-4">
+                  Sport
+                </h5>
+                <h5 class="col-4">
+                 <span style="color:#1e90ff;"><%= game.sportname %></span>
+                </h5>
+              </div>
+              <div class="row justify-content-center">
+                <h5 class="col-4">
+                  ID
+                </h5>
+                <h5 class="col-4">
+                  <span style="color:#1e90ff;"><%= game.gameid %></span>
+                </h5>
+              </div>
+              <div class="row justify-content-center">
+                <h5 class="col-4">
+                  Time
+                </h5>
+                <h5 class="col-4">
+                  <span style="color:#1e90ff;"><%= game.time.substring(0,5) %></span>
+                </h5>
+              </div>
+              <div class="row justify-content-center">
+                <h5 class="col-4">
+                  Location
+                </h5>
+                <h5 class="col-4">
+                  <span style="color:#1e90ff;"><%= game.location %></span>
+                </h5>
+              </div>
             </div>
           </div>
+
+          <% n++ %>
         <% } %>
       <% }); %>
     <% } %>
+
+    <% if(n >= 0) { %>
+      <p><i><%= n %> game<%- (n == 1) ? '' : 's' %> found</i></p>
+    <% } %>
+
+  </div>
+
+  <div class="modal fade" id="howToScheduleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" >
+      <div class="modal-content">
+        <div class="modal-body text-center" >
+          <h3>Game Scheduling</h3>
+          <p>
+            Prior to each new season and after team sign-ups have closed, 
+            an email will be sent to all players notifying them of the scheduling period,
+            and an availability form will be posted on each player's profile. 
+          </p>
+          <p>We will then schedule games on dates and times that maximize available players for each team.</p>
+          <p>
+            We will follow up as needed to resolve any logistical issues, and
+            schedules will be posted by start of each season.
+          </p>
+          <p>
+            Additional games can be requested throughout the season by contacting the scheduling team at
+            help@improved.com.
+          </p>
+          <p>Thank you!</p>
+        </div>
+      </div>
+    </div>
   </div>
 </main>
 
