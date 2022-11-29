@@ -370,14 +370,16 @@ app.post("/team/join", (req, res) => {
 app.post("/team/create", (req, res) => {
   const sportID = req.body.sportID;
   const teamInsertQuery = 'INSERT INTO teams (teamName) VALUES ($1) RETURNING teamID';
-  const teamRelationInsertQuery = 'INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);INSERT INTO teamsToCaptains (playerID, teamID) VALUES ($1, $2);INSERT INTO teamsToSports (teamID, sportID) VALUES ($2, $3);';
+  const teamRelationInsertQuery = `INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);
+  INSERT INTO teamsToCaptains (playerID, teamID) VALUES ($1, $2);
+  INSERT INTO teamsToSports (teamID, sportID) VALUES ($2, $3);`;
   db.any(teamInsertQuery, [req.body.teamName])
     .then((teamID) => {
       db.none(teamRelationInsertQuery, [req.session.user.playerid, teamID[0].teamid, sportID])
         .then(() => {
           db.one('SELECT * FROM teams where teamID = $1', [teamID[0].teamid])
             .then((team) => {
-              return res.render("./pages/team", { team: team, user: req.session.user });
+              return res.redirect("./"+teamID[0].teamid);
             })
             .catch((err) => {
               console.log(err);
