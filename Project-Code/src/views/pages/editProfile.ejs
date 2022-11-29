@@ -6,7 +6,7 @@
         <h3 style="padding-top:5vh;">Edit Profile<a class="btn rounded-pill" style="background-color:#e8fcec;color:#17d475;"  href="/profile">Back</a></h3>
         
         <form action="/editProfile" method="POST">
-            <div style="width:30vh;padding-top:2vh;" class="mx-auto">
+            <div style="width:35vh;padding-top:2vh;" class="mx-auto">
                 <input type="hidden" name="playerid" value="<%= user.playerID %>">
 
                 <label class="form-label"> Username </label>
@@ -49,16 +49,16 @@
 
                 <label class="form-label"> Email </label>
                 <% if(user.email) { %>
-                    <input type="text" class="form-control" name="email" value="<%= user.email %>" pattern="^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$"><br>
+                    <input type="text" class="form-control" name="email" value="<%= user.email %>" pattern="^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$" title="Must have format example@example.com"><br>
                 <% } else { %>
-                    <input type="text" class="form-control" name="email" value="" pattern="^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$"><br>
+                    <input type="text" class="form-control" name="email" value="" pattern="^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$" title="Must have format example@example.com"><br>
                 <% } %>
 
                 <label class="form-label"> Phone Number </label>
                 <% if(user.phone) { %>
-                    <input type="text" class="form-control" name="phone" value="<%= user.phone %>" pattern="^[0-9]{10}$"><br>
+                    <input type="text" class="form-control" name="phone" value="<%= user.phone %>" pattern="^[0-9]{10}$" title="Must have format 1234567890"><br>
                 <% } else { %>
-                    <input type="text" class="form-control" name="phone" value="" pattern="^[0-9]{10}$"><br>
+                    <input type="text" class="form-control" name="phone" value="" pattern="^[0-9]{10}$" title="Must have format 1234567890"><br>
                 <% } %>
 
                 <input style="background-color:#e8fcec;color:#17d475;" class="btn rounded-pill" type="submit" value="Save changes">
