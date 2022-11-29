@@ -11,8 +11,10 @@
         <h4 style="padding-top:5vh;color:#ff8a8a;">You haven't joined any teams yet.<br>Join teams by going to the<a href="/sports"> sports </a>page.</h4>
       <% } %>
 
-      <% teams.forEach(function(team) { %>
-        <form action="/team" method="GET">
+      <% teams.forEach(function(team) { 
+          let hrefName="/team/" + team.teamid
+          %>
+        <form action= <%= hrefName %> method="GET">
           <input class="form-control" name="teamid" id="teamid" value="<%= team.teamid %>" type="hidden">
           <div style="padding-top:3vh;">
             <button style="background-color:#1e90ff;color:white;" class="btn rounded-pill"><%= team.teamname %> (ID: <%= team.teamid %>)</button>

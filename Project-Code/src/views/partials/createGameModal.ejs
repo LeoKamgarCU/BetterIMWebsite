@@ -1,0 +1,35 @@
+<%if(locals.playerID < 6){%>
+  <%}%>
+  <form action="/gameCreate" method="POST">
+      <div class="modal fade" id="CreateGame" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header text-center">
+              <h1 class="modal-title fs-3">Create Game</h1>
+              <button type="reset" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="input-group mb-3">
+                <label class="input-group-text" for="sport">Select sport: </label>
+                <select class="form-select" name="sportselect" id="sportselect" required>
+                  <option selected disabled value=""></option>
+                  <%sports.forEach(function(sport, index){%>
+                    <option value=<%=sport.sportid%>><%=sport.sportname%>
+                    </option>
+                    <%})%>
+                </select>
+              </div>
+
+
+            </div>
+            <div class="modal-footer">
+              <button type="reset" class="btn rounded-pill" style="background-color:#dedee3; color:#9c9cac"
+                data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475"
+                data-bs-dismiss="modal" >Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    
