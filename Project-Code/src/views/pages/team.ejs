@@ -67,7 +67,9 @@
         <%})%>
     </div>
     <a class="btn rounded-pill"
-    style="background-color:#1e90ff; color:#ffffff; position: absolute; right: 100px; top: 100px" href="/team/delete/<%= team.teamid %>">Delete team</a>
+   <% if (teamsToCaptains.playerid === user.playerid) { %>
+       style="background-color:#1e90ff; color:#ffffff; position: absolute; right: 100px; top: 100px" href="/team/delete/<%= team.teamid %>">Delete team</a>
+    <% } %>
 </main>
 
 <%- include ('../partials/footer') %>

@@ -336,7 +336,13 @@ app.get('/team/delete/:teamID', async (req, res) => {
     return res.redirect("/yourTeams");
   }
 
-  const query = `DELETE FROM teams WHERE teamID=$1;`
+  const query = `
+DELETE FROM teamsToPlayers WHERE teamID=$1;
+DELETE FROM teamsToSports WHERE teamID=$1;
+DELETE FROM teamsToGames WHERE teamID=$1;
+DELETE FROM teamsToCaptains WHERE teamID=$1;
+DELETE FROM gamesToWinners WHERE teamID=$1;
+DELETE FROM teams WHERE teamID=$1;`
   db.any(query, [req.params.teamID])
       .then(() => {
         return res.redirect("/yourTeams");
