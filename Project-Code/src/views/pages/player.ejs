@@ -36,12 +36,15 @@
                 <h4 style="color:#1e90ff;padding-top:2vh;">Teams:</h4>
                 <% if(teams.length > 0) { %>
                     <% teams.forEach(function(team) { %>
-                    <form action="/team" method="GET">
-                        <input class="form-control" name="teamid" id="teamid" value="<%= team.teamid %>" type="hidden">
-                        <div style="padding-top:2vh;">
-                            <button class="btn rounded-pill" style="background-color:white;color:black;"><%= team.teamname %></button>
-                        </div>
-                    </form>
+                        <% let hrefName="/team/" + team.teamid %>
+                        <form action= <%= hrefName %> method="POST" style="padding-bottom:2vh">
+                          <button style="background-color:#1e90ff;color:white;" class="btn rounded-pill"><%= team.teamname %></button>
+                        </form>
+
+
+
+
+                    
                     <% }); %>
                 <% } else { %>
                     <h5>This player has not joined any teams yet.</h5>

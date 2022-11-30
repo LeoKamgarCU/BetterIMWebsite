@@ -38,8 +38,19 @@
             <div class="card-body">
               <h1 style="padding-top:2vh;color:#1e90ff;"><%= weekdays[game.gamedate.getDay()] %> <%= months[game.gamedate.getMonth()] %> <%= game.gamedate.getDate() %></h1>
               <h5><%= game.gamedate.getFullYear() %></h5>
-              <h3 style="color:#1e90ff;"><%= game.team1 %><span style="color:#ffffff;font-size:1vw;"> vs </span><%= game.team2 %></h3>
-            
+
+              <div class="d-flex justify-content-center" style="padding-bottom:2vh">
+                <% let hrefName="/team/" + game.team1id %>
+                <form action= <%= hrefName %> method="POST">
+                  <button style="background-color:#1e90ff;color:white;" class="btn rounded-pill"><%= game.team1 %></button>
+                </form>
+                <span style="color:#ffffff;font-size:1vw;"> vs </span>
+                <% hrefName="/team/" + game.team2id %>
+                <form action= <%= hrefName %> method="POST">
+                  <button style="background-color:#1e90ff;color:white;" class="btn rounded-pill"><%= game.team2 %></button>
+                </form>
+              </div>
+              
               <div class="row justify-content-center">
                 <h5 class="col-4">
                   Sport
