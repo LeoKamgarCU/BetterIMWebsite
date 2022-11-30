@@ -14,8 +14,7 @@
       <% teams.forEach(function(team) { 
           let hrefName="/team/" + team.teamid
           %>
-        <form action= <%= hrefName %> method="GET">
-          <input class="form-control" name="teamid" id="teamid" value="<%= team.teamid %>" type="hidden">
+        <form action= <%= hrefName %> method="POST">
           <div style="padding-top:3vh;">
             <button style="background-color:#1e90ff;color:white;" class="btn rounded-pill"><%= team.teamname %></button>
           </div>
