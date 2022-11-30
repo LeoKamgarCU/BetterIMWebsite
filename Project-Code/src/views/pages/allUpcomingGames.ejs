@@ -22,6 +22,17 @@
     <% const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] %>
 
     <% games.forEach(function(game) { %>
+      <% var hour = parseInt(game.time.substring(0,2)) %>
+      <% var min = parseInt(game.time.substring(3,5)) %>
+      <% var am = true %>
+      <% var leadingZero = false %>
+      <% if(hour > 12) {hour -= 12; am = false;} %>
+      <% if(min < 10) { %>
+        <% var time = String(hour) + ':0' + String(min) %>
+      <% } else { %>
+        <% var time = String(hour) + ':' + String(min) %>
+      <% } %> 
+
         <% if(!((game.gamedate.getFullYear() < today.getFullYear()) || ((game.gamedate.getFullYear() == today.getFullYear()) && (game.gamedate.getMonth() < today.getMonth())) || ((game.gamedate.getFullYear() == today.getFullYear()) && (game.gamedate.getMonth() == today.getMonth()) && (game.gamedate.getDate() < today.getDate())))) { %>
           <div class="card text-white bg-dark mb-3 text-center mx-auto d-flex" style="width:50%;">
             <div class="card-body">
@@ -50,7 +61,14 @@
                   Time
                 </h5>
                 <h5 class="col-4">
-                  <span style="color:#1e90ff;"><%= game.time.substring(0,5) %></span>
+                  <span style="color:#1e90ff;">
+                    <%= time %>
+                    <% if(am) { %>
+                      AM
+                    <% } else { %>
+                      PM
+                    <% } %>
+                  </span>
                 </h5>
               </div>
               <div class="row justify-content-center">
