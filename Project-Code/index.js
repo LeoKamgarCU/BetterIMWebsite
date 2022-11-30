@@ -108,7 +108,7 @@ app.post("/register", async (req, res) => {
     .catch((err) => {
       console.log(err);
       res.render("./pages/login", {
-        message: "Failed to register, that username or email is already taken (or your input was too long). Try again.",
+        message: "Failed to register, that username or email is already taken. Try again.",
         error: 1
       });
     });
@@ -429,7 +429,7 @@ app.post("/allGames/create", (req, res) => {
     })
 });
 
-app.post("/edit_profile", (req, res) => {
+app.post("/editProfile", (req, res) => {
 
   console.log(req.session.user);
   var year = req.body.classyear;
@@ -460,7 +460,7 @@ app.post("/edit_profile", (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      return res.render("pages/profile", { user: req.session.user, error: true, message: 'Error. That username or email is already registered with another account (or your input was too long).' });
+      return res.render("pages/profile", { user: req.session.user, error: true, message: 'Error. That username or email is already registered with another account.' });
     });
 });
 

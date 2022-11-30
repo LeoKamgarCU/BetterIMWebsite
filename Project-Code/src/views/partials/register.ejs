@@ -13,19 +13,19 @@
 
         <div class="modal-body">
           <div class="input-group mb-3">
-            <input type="text" class="form-control" name="username" id="username" placeholder="Username" required>
+            <input type="text" class="form-control" name="username" id="username" placeholder="Username" maxlength="100" pattern="^[^\s]+(\s+[^\s]+)*$" title="No whitespace at beginning or end" required>
           </div>
 
           <div class="input-group mb-3">
-            <input type="text" class="form-control" name="playername" id="playername" placeholder="Player name" required>
+            <input type="text" class="form-control" name="playername" id="playername" placeholder="Player name" maxlength="100" pattern="^[^\s]+(\s+[^\s]+)*$" title="No whitespace at beginning or end" required>
           </div>
 
           <div class="input-group mb-3">
-            <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+            <input type="password" class="form-control" name="password" id="password" placeholder="Password" maxlength="100" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{6,}" title="Minimum 6 characters plus one of each: uppercase, lowercase, number, special character" required>
           </div>
 
           <div class="input-group mb-3">
-            <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
+            <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" maxlength="100" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{6,}" required>
           </div>
 
           <div class="input-group mb-3">
@@ -51,11 +51,11 @@
           </div>
 
           <div class="input-group mb-3">
-            <input type="text" class="form-control" name="profilePhotoLink" id="profilePhotoLink" placeholder="Profile photo link (optional, only use images you own)">
+            <input type="url" class="form-control" name="profilePhotoLink" id="profilePhotoLink" placeholder="Profile photo link (optional, only use images you own)">
           </div>
 
           <div class="input-group mb-3">
-            <input type="text" class="form-control" name="email" id="email" placeholder="Email (optional, for account security/communication)" pattern="^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$" title="Must have format example@example.com">
+            <input type="email" class="form-control" name="email" id="email" placeholder="Email (optional, for account security/communication)">
           </div>
 
           <div class="input-group mb-3">

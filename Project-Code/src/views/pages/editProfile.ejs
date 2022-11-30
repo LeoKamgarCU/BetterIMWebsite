@@ -10,10 +10,10 @@
                 <input type="hidden" name="playerid" value="<%= user.playerID %>">
 
                 <label class="form-label"> Username </label>
-                <input type="text" class="form-control" name="username" value="<%= user.username %>" required><br>
+                <input type="text" class="form-control" name="username" value="<%= user.username %>"  maxlength="100" pattern="^[^\s]+(\s+[^\s]+)*$" title="No whitespace at beginning or end" required><br>
 
                 <label class="form-label"> Name </label>
-                <input type="text" class="form-control" name="playername" value="<%= user.playername %>" required><br>
+                <input type="text" class="form-control" name="playername" value="<%= user.playername %>" maxlength="100" pattern="^[^\s]+(\s+[^\s]+)*$" title="No whitespace at beginning or end" required><br>
 
                 <label class="form-label" for="classyear">Class of</label>
                 <% if(user.classyear !== 0) { %>
@@ -45,13 +45,13 @@
                 </select><br>           
 
                 <label class="form-label"> Profile Photo Link</label>
-                <input type="text" class="form-control" name="profilephotolink" value="<%= user.profilephoto %>"><br>
+                <input type="url" class="form-control" name="profilephotolink" value="<%= user.profilephoto %>"><br>
 
                 <label class="form-label"> Email </label>
                 <% if(user.email) { %>
-                    <input type="text" class="form-control" name="email" value="<%= user.email %>" pattern="^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$" title="Must have format example@example.com"><br>
+                    <input type="email" class="form-control" name="email" value="<%= user.email %>"><br>
                 <% } else { %>
-                    <input type="text" class="form-control" name="email" value="" pattern="^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$" title="Must have format example@example.com"><br>
+                    <input type="email" class="form-control" name="email" value=""><br>
                 <% } %>
 
                 <label class="form-label"> Phone Number </label>
