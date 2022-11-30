@@ -360,7 +360,7 @@ app.post("/team/join", (req, res) => {
       db.one("SELECT * FROM teams WHERE teamID=$1", [req.body.teamid])
         .then((team) => {
           console.log("team:" + team.teamname);
-          return res.render(`./pages/team`, { team: team, error: false, message: 'Successfully joined team.', user: req.session.user });
+          return res.redirect("./"+req.body.teamid);
         })
         .catch((err) => {
           console.log(err);
