@@ -26,7 +26,8 @@
       <% var min = parseInt(game.time.substring(3,5)) %>
       <% var am = true %>
       <% var leadingZero = false %>
-      <% if(hour > 12) {hour -= 12; am = false;} %>
+      <% if(hour > 12) {hour -= 12;} %>
+      <% if(hour >= 12) {am = false;} %>
       <% if(min < 10) { %>
         <% var time = String(hour) + ':0' + String(min) %>
       <% } else { %>

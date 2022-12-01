@@ -317,7 +317,7 @@ app.get("/team/:teamID", (req, res) => {
         numWinners: data[4],
         games: data[5],
         user: req.session.user,
-        result: req.query.joinresult,
+        result: req.query.joinResult,
         onTeam: data[6],
         sport: data[7]
       });
@@ -416,10 +416,19 @@ DELETE FROM teams WHERE teamID=$1;`
 })
 
 app.post("/team/join", (req, res) => {
-  db.any(`SELECT * FROM teamsToPlayers WHERE playerID = ${req.session.user.playerid} AND teamID = ${req.body.teamid};`) 
+  db.any(` 
+  SELECT * FROM sports WHERE (sportID IN(SELECT sportID FROM teamsToSports WHERE teamID IN(SELECT teamID FROM teamsToPlayers WHERE playerID = ${req.session.user.playerid}))) 
+  AND sportID IN(SELECT sportID FROM sports WHERE (sportID = (SELECT sportID FROM teamsToSports WHERE teamID = ${req.body.teamid} LIMIT 1)));
+  `)
+  .then((data) => {
+    if(data.length > 0) {
+      return res.redirect("./"+req.body.teamid+"?joinResult=sportError");
+    }
+    else {
+      db.any(`SELECT * FROM teamsToPlayers WHERE playerID = ${req.session.user.playerid} AND teamID = ${req.body.teamid};`) 
     .then((data) => {
         if(data.length > 0) {
-          return res.redirect("./"+req.body.teamid+"?joinresult=failure");
+          return res.redirect("./"+req.body.teamid+"?joinResult=onTeamError");
         }
         else {
           const query = `INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);`
@@ -428,7 +437,7 @@ app.post("/team/join", (req, res) => {
               db.one("SELECT * FROM teams WHERE teamID=$1", [req.body.teamid])
                 .then((team) => {
                   console.log("team:" + team.teamname);
-                  return res.redirect("./"+req.body.teamid+"?joinresult=success");
+                  return res.redirect("./"+req.body.teamid+"?joinResult=success");
                 })
                 .catch((err) => {
                   console.log(err);
@@ -443,8 +452,17 @@ app.post("/team/join", (req, res) => {
 
     })
     .catch((err) => {
-          return res.redirect("./"+req.body.teamid+"?joinresult=failure");
+          return res.redirect("./"+req.body.teamid+"?joinResult=failure");
 });
+
+    }
+  })
+  .catch((err) => {
+    return res.redirect("./"+req.body.teamid+"?joinResult=failure");
+});
+
+
+  
 });
 
 app.post("/team/create", (req, res) => {

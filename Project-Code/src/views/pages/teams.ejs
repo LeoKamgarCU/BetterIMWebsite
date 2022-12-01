@@ -35,6 +35,9 @@
         </form>
 
         <h1 style="padding-top:2vh; padding-bottom:2vh">Discover Teams</h1>
+        <% if(teams.length == 0) { %>
+          <h3 style="padding-top:5vh;color:#ff8a8a;">No teams yet</h3>
+        <% } %>
 
         <%teams.forEach(function(team, index){ 
           let count = 0;

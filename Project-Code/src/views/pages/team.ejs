@@ -2,19 +2,20 @@
 <%- include ('../partials/menu') %>
 
 <main>
-  <% if(result == "success") { %> 
-    <div class="text-center" style="padding-top:3vh">
-    <div class="btn rounded-pill alert alert-success"> 
-        Successfully joined <%= team.teamname %>
-    </div>
-  </div>
-  <% } else if(result == "failure") { %>
+ 
+  <% if(result == "sportError" || result == "onTeamError") { %>
     <div class="text-center" style="padding-top:3vh">
       <div class="btn rounded-pill alert alert-danger"> 
-          You are already a member of <%= team.teamname %>
+          You are either already on this team or already on a team for this sport. You cannot be on more than one team for a single sport.
       </div>
     </div>
-  <% } %>
+    <% } else if(result == "success") { %>
+        <div class="text-center" style="padding-top:3vh">
+        <div class="btn rounded-pill alert alert-success"> 
+            Successfully joined <%= team.teamname %>
+        </div>
+      </div>
+      <% }  %>
 
   <div class="text-center" style="padding-top:2vh">
     <h1><%= team.teamname %></h1>
@@ -88,6 +89,9 @@
     </div>
     <div class="container text-center p-4" style = "position: absolute; left: 200px;top: 200px;width: 30%;">
         <h3>Games</h3>
+        <% if(games.length == 0) { %>
+          <h3 style="padding-top:5vh;color:#ff8a8a;">No games yet</h3>
+        <% } %>
         <%teamGames.forEach(function(game, index){
             %>
         <div class="row p-2">
@@ -115,4 +119,6 @@
   
 </main>
 
+<div style="padding-top:370vh">
 <%- include ('../partials/footer') %>
+</div>
