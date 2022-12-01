@@ -440,7 +440,7 @@ app.post("/team/join", (req, res) => {
               return res.render("./pages/teams", { error: true, message: 'Unable to join team.', user: req.session.user });
             });
         }
-      
+
     })
     .catch((err) => {
           return res.redirect("./"+req.body.teamid+"?joinresult=failure");
