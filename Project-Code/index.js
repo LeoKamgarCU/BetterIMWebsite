@@ -296,14 +296,14 @@ app.get("/team/:teamID", (req, res) => {
     WHERE teamsToPlayers.teamID = $1`, [req.params.teamID])
     const teamGames = db.any(`SELECT *  FROM games 
     INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID
-    WHERE teamsToGames.teamID = $1 ORDER BY games.gameID `, req.params.teamID)
+    WHERE teamsToGames.teamID = $1 ORDER BY games.gameDate `, req.params.teamID)
     const numWinners = db.one(`SELECT COUNT(*) FROM gamesToWinners WHERE teamID = $1;`, req.params.teamID)
     const gamesQuery = t.any(`SELECT * FROM games INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID
      INNER JOIN teamsToSports ON teamsToGames.teamID = teamsToSports.teamID
       INNER JOIN sports ON teamsToSports.sportID = sports.sportID
        INNER JOIN teams ON teamsToSports.teamID = teams.teamID 
        WHERE games.gameid IN 
-       (SELECT gameid FROM teamsToGames WHERE teamsToGames.teamID = $1) ORDER BY games.gameID;`,req.params.teamID);
+       (SELECT gameid FROM teamsToGames WHERE teamsToGames.teamID = $1) ORDER BY games.gameDate;`,req.params.teamID);
     // returning a promise that determines a successful transaction:
     return t.batch([team, teamsToCaptains, players, teamGames, numWinners, gamesQuery, onTeam, sport]); // all of the queries are to be resolved;
   })
