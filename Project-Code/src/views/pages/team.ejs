@@ -96,7 +96,9 @@
             %>
         <div class="row p-2">
             <div class="card bg-light h-100">
+              <% if(games[2*index]) { %>
                 <div class="card-header"><h5><%=games[2*index].teamname%> vs <%=games[2*index+1].teamname%></h5></div>
+              <% } %>
                 <div class="card-body d-flex flex-column">
                   <div class="container mt-auto">
                     <p class="card-text"><b>Game Date:</b> <%= game.gamedate.getMonth()+1 %>-<%= game.gamedate.getDate() %>-<%= game.gamedate.getFullYear() %>

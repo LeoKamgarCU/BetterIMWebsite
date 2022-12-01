@@ -53,14 +53,10 @@
              
               <div class="d-flex justify-content-center" style="padding-bottom:2vh;">
                 <% let hrefName="/team/" + game.team1id %>
-                <form action= <%= hrefName %> method="GET">
-                  <button style="background-color:#1e90ff;color:white;font-size:18px;" class="btn rounded-pill"><%= game.team1 %></button>
-                </form>
+                  <a href= <%= hrefName %> style="background-color:#1e90ff;color:white;font-size:18px;" class="btn rounded-pill"><%= game.team1 %></a>
                 <span style="color:#ffffff;font-size:1vw;"> vs </span>
                 <% hrefName="/team/" + game.team2id %>
-                <form action= <%= hrefName %> method="GET">
-                  <button style="background-color:#1e90ff;color:white;font-size:18px;" class="btn rounded-pill"><%= game.team2 %></button>
-                </form>
+                  <a href= <%= hrefName %> style="background-color:#1e90ff;color:white;font-size:18px;" class="btn rounded-pill"><%= game.team2 %></a>
               </div>
             
               <div class="row justify-content-center">
@@ -132,8 +128,7 @@
             schedules will be posted by start of each season.
           </p>
           <p>
-            Additional games can be requested throughout the season by contacting the scheduling team at
-            help@improved.com.
+            Additional games can be requested throughout the season by contacting the scheduling team <a href="mailto:help@improved.com">here</a>
           </p>
           <p>Thank you!</p>
           <br>
