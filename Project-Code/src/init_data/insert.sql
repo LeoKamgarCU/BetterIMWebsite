@@ -8,7 +8,7 @@ INSERT INTO sports (sportName, sportDesc) VALUES ('3x3 Basketball', 'A variation
 
 -- All passwords are asdf. 40 users
 INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate, gender) VALUES ('leka5026', 'leo', '$2b$10$pSWjpntEzHInJozarXe4Z..5GM5QeUE/z3OEfK3NHdDS4tjPSj4Yu', 2023, '', '2022-11-11', 'Male');
-INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate, email, phone, gender) VALUES ('thbr4871', 'theo', '$2b$10$pSWjpntEzHInJozarXe4Z..5GM5QeUE/z3OEfK3NHdDS4tjPSj4Yu', 2025, '', '2022-11-11', 'improvedexampleuser@gmail.com', '7202994398', 'Male');
+INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate, email, phone, gender) VALUES ('thbr4871', 'theo', '$2b$10$pSWjpntEzHInJozarXe4Z..5GM5QeUE/z3OEfK3NHdDS4tjPSj4Yu', 2025, '', '2022-11-11', 'thbr4871@colorado.edu', '7202994398', 'Male');
 INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate, gender) VALUES ('zach2898', 'zach', '$2b$10$pSWjpntEzHInJozarXe4Z..5GM5QeUE/z3OEfK3NHdDS4tjPSj4Yu', 2024, '', '2022-11-11', 'Male');
 INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate, gender) VALUES ('jafr7644', 'jacob', '$2b$10$pSWjpntEzHInJozarXe4Z..5GM5QeUE/z3OEfK3NHdDS4tjPSj4Yu', 2023, '', '2022-11-11', 'Male');
 INSERT INTO players (username, playerName, password, classYear, profilePhoto, joinDate, gender) VALUES ('japa2103', 'jaxon', '$2b$10$pSWjpntEzHInJozarXe4Z..5GM5QeUE/z3OEfK3NHdDS4tjPSj4Yu', 2023, '', '2022-11-11', 'Male');
