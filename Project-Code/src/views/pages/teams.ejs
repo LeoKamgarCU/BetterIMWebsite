@@ -37,7 +37,18 @@
         <h1 style="padding-top:2vh; padding-bottom:2vh">Discover Teams</h1>
         <% if(teams.length == 0) { %>
           <h3 style="padding-top:5vh;color:#ff8a8a;">No teams yet</h3>
-        <% } %>
+          <% } else if(teams.length==1){ %>
+        
+          <div style="padding-bottom:2vh">
+          <em ><%=teams.length%> team</em>
+        </div>
+        <% } else {%>
+          <div style="padding-bottom:2vh">
+
+          <em><%=teams.length%> teams</em>
+        </div>
+  
+          <% } %>
 
         <%teams.forEach(function(team, index){ 
           let count = 0;

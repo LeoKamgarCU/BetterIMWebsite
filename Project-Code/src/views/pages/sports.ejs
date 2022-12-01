@@ -8,6 +8,23 @@
       <div class="container text-center p-4">
         <!-- THE REST OF YOUR HTML CODE GOES HERE -->
         <h1 style="padding-top:2vh; padding-bottom:2vh">Discover Sports</h1>
+        <% if(sports.length == 0) { %>
+          <div style="padding-bottom:2vh">
+
+          <h4 style="padding-top:5vh;color:#ff8a8a;">No sports yet </h4>
+        </div>
+        <% } else if(sports.length==1){ %>
+          <div style="padding-bottom:2vh">
+          <em ><%=sports.length%> sport</em>
+        </div>
+        <% } else {%>
+          <div style="padding-bottom:2vh">
+
+          <em><%=sports.length%> sports</em>
+        </div>
+  
+          <% } %>
+
         <%sports.forEach(function(sport, index){
           let count = 0;
           teamsToSports.forEach(function(t2s, index){
