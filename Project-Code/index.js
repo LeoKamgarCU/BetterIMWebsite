@@ -284,7 +284,7 @@ app.get("/teams/:sportName", (req, res) => {
     });
 });
 
-app.post("/team/:teamID", (req, res) => {
+app.get("/team/:teamID", (req, res) => {
   db.tx(t => {
     // creating a sequence of transaction queries:
     const team = db.one("SELECT * FROM teams WHERE teamID=$1", [req.params.teamID])
