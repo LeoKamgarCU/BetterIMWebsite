@@ -30,3 +30,8 @@ Meeting 3:
 - Probably don't need a messages page, because teammates will have eachother's phone numbers already.
 
 Meeting 4:
+- Last meeting
+- Did standup
+- Did demo
+- Cory suggested we make a test email account to show feature
+- No questions
