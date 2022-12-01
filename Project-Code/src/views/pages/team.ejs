@@ -44,7 +44,15 @@
     
   </form>
   </div>
-    <% } %>
+    <% } else { %>
+
+<form action="/team/join" method="post">
+  <div style="padding-left:2vw">
+                      <button class="btn rounded-pill" style="background-color:#e8fcec; color:#17d475" name="teamid" value=<%=team.teamid%> >Join team</button>
+                    </form>
+                  </div>
+
+      <% } %>
 
     <% if (teamsToCaptains.playerid === user.playerid) { %>
       <div style="padding-left:2vw;padding-top:1vh">
