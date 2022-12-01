@@ -499,7 +499,7 @@ app.post("/team/create", (req, res) => {
 app.post("/allGames/create", (req, res) => {
 
   const gameInsertQuery = 'INSERT INTO games (gameDate, time, location) VALUES ($1,$2,$3) RETURNING gameID';
-  const gameRelationInsertQuery = `INSERT INTO teamsToGames (gameID, teamID) VALUES ($1, $2);INSERT INTO teamsToGames (gameID, teamID) VALUES ($1, $3);`
+  const gameRelationInsertQuery = `INSERT INTO teamsToGames (teamID, gameID) VALUES ($2, $1);INSERT INTO teamsToGames (teamID, gameID) VALUES ($3, $1);`
   db.any(gameInsertQuery, [req.body.gameDate, req.body.gameTime, req.body.gameLocation])
     .then((data) => {
       db.none(gameRelationInsertQuery, [data[0].gameid, req.body.teamid1, req.body.teamid2])
@@ -564,7 +564,7 @@ app.get("/logout", (req, res) => {
 app.get("/yourUpcomingGames", (req, res) => {
   db.tx(t => {
     const teamsQuery = t.any(`SELECT * FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid};`);
-    const gamesQuery = t.any(`SELECT * FROM games INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID INNER JOIN teamsToSports ON teamsToGames.teamID = teamsToSports.teamID INNER JOIN sports ON teamsToSports.sportID = sports.sportID INNER JOIN teams ON teamsToSports.teamID = teams.teamID WHERE games.gameid IN (SELECT gameid FROM teamsToGames WHERE teamsToGames.teamID IN (SELECT teamid FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid})) ORDER BY games.gameID;`);
+    const gamesQuery = t.any(`SELECT * FROM games INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID INNER JOIN teamsToSports ON teamsToGames.teamID = teamsToSports.teamID INNER JOIN sports ON teamsToSports.sportID = sports.sportID INNER JOIN teams ON teamsToSports.teamID = teams.teamID WHERE games.gameid IN (SELECT gameid FROM teamsToGames WHERE teamsToGames.teamID IN (SELECT teamid FROM teamsToPlayers WHERE playerid = ${req.session.user.playerid})) ORDER BY games.gameDate;`);
 
     return t.batch([teamsQuery, gamesQuery]);
   })
@@ -595,7 +595,7 @@ app.get("/yourUpcomingGames", (req, res) => {
 });
 
 app.get("/allUpcomingGames", (req, res) => {
-  const query = `SELECT * FROM games INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID INNER JOIN teamsToSports ON teamsToGames.teamID = teamsToSports.teamID INNER JOIN sports ON teamsToSports.sportID = sports.sportID INNER JOIN teams ON teamsToSports.teamID = teams.teamID ORDER BY games.gameID;`;
+  const query = `SELECT * FROM games INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID INNER JOIN teamsToSports ON teamsToGames.teamID = teamsToSports.teamID INNER JOIN sports ON teamsToSports.sportID = sports.sportID INNER JOIN teams ON teamsToSports.teamID = teams.teamID ORDER BY games.gameDate;`;
 
   db.any(query)
     .then(data => {
@@ -626,7 +626,7 @@ app.get("/allGames", (req, res) => {
 
 
     const sports = db.any(`SELECT * FROM sports ORDER BY sportName ASC;`);
-    const gamesQuery = t.any(`SELECT * FROM games INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID INNER JOIN teamsToSports ON teamsToGames.teamID = teamsToSports.teamID INNER JOIN sports ON teamsToSports.sportID = sports.sportID INNER JOIN teams ON teamsToSports.teamID = teams.teamID ORDER BY games.gameID;`);
+    const gamesQuery = t.any(`SELECT * FROM games INNER JOIN teamsToGames ON games.gameID = teamsToGames.gameID INNER JOIN teamsToSports ON teamsToGames.teamID = teamsToSports.teamID INNER JOIN sports ON teamsToSports.sportID = sports.sportID INNER JOIN teams ON teamsToSports.teamID = teams.teamID ORDER BY games.gameDate;`);
     const winnersQuery = t.any(`SELECT * FROM gamesToWinners;`);
 
     return t.batch([gamesQuery, winnersQuery, sports]);
