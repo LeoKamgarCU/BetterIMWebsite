@@ -50,15 +50,15 @@
               <h1 style="padding-top:2vh;color:#1e90ff;"><%= weekdays[game.gamedate.getDay()] %> <%= months[game.gamedate.getMonth()] %> <%= game.gamedate.getDate() %></h1>
               <h5><%= game.gamedate.getFullYear() %></h5>
              
-              <div class="d-flex justify-content-center" style="padding-bottom:2vh">
+              <div class="d-flex justify-content-center" style="padding-bottom:2vh;">
                 <% let hrefName="/team/" + game.team1id %>
                 <form action= <%= hrefName %> method="GET">
-                  <button style="background-color:#1e90ff;color:white;" class="btn rounded-pill"><%= game.team1 %></button>
+                  <button style="background-color:#1e90ff;color:white;font-size:18px;" class="btn rounded-pill"><%= game.team1 %></button>
                 </form>
                 <span style="color:#ffffff;font-size:1vw;"> vs </span>
                 <% hrefName="/team/" + game.team2id %>
-                <form action= <%= hrefName %> method="POST">
-                  <button style="background-color:#1e90ff;color:white;" class="btn rounded-pill"><%= game.team2 %></button>
+                <form action= <%= hrefName %> method="GET">
+                  <button style="background-color:#1e90ff;color:white;font-size:18px;" class="btn rounded-pill"><%= game.team2 %></button>
                 </form>
               </div>
             
@@ -135,6 +135,8 @@
             help@improved.com.
           </p>
           <p>Thank you!</p>
+          <br>
+          <i>Admin users: to add new games, go to the 'All Games' page.</i>
         </div>
       </div>
     </div>
