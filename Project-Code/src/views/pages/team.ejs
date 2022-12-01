@@ -2,12 +2,57 @@
 <%- include ('../partials/menu') %>
 
 <main>
-    <div class="col">
-        <%- include ('../partials/message') %>
+  <% if(result == "success") { %> 
+    <div class="text-center" style="padding-top:3vh">
+    <div class="btn rounded-pill alert alert-success"> 
+        Successfully joined <%= team.teamname %>
     </div>
-    <div class="container text-center p-4" >
+  </div>
+  <% } else if(result == "failure") { %>
+    <div class="text-center" style="padding-top:3vh">
+      <div class="btn rounded-pill alert alert-danger"> 
+          You are already a member of <%= team.teamname %>
+      </div>
+    </div>
+  <% } %>
+
+  <div class="text-center" style="padding-top:2vh">
     <h1><%= team.teamname %></h1>
-</div>
+    <h6>ID: <%= team.teamid %></h6>
+    <h6> <%=  sport[0].sportname%></h6>
+  </div>
+
+
+  <% if(onTeam.length > 0) { %> 
+    <div style="padding-left:85vw;padding-top:3vh">
+      <form action="/leaveTeam" method="POST">
+        <input name="teamid" id="teamid" value="<%=team.teamid %>" type="hidden"> 
+        <% if (teamsToCaptains.playerid === user.playerid) { %>
+          <input name="iscaptain" id="iscaptain" value="true" type="hidden"> 
+        <% } else {%>
+        <input name="iscaptain" id="iscaptain" value="false" type="hidden"> 
+        <% } %>
+        <input name="teamsize" id="teamsize" value="false" type="hidden"> 
+
+
+
+    <button type="submit" class="btn rounded-pill" style="background-color:#ffe5ec;color:#fb6f92">Leave Team</button>
+  </form>
+  </div>
+    <% } %>
+
+    <% if (teamsToCaptains.playerid === user.playerid) { %>
+      <div style="padding-left:85vw;padding-top:1vh">
+  
+      <button class="btn rounded-pill" style="background-color:#1e90ff; color:#ffffff;" href="/team/delete/<%= team.teamid %>">Delete team</button>
+    </div>
+  
+      <% } %>
+
+
+
+
+
 
 <div class="container text-center p-4" style = "position: absolute; right: 200px;top: 200px;width: 30%;">
     <h3>Record</h3>
@@ -66,10 +111,8 @@
         </div>
         <%})%>
     </div>
-    <a class="btn rounded-pill"
-   <% if (teamsToCaptains.playerid === user.playerid) { %>
-       style="background-color:#1e90ff; color:#ffffff; position: absolute; right: 100px; top: 100px" href="/team/delete/<%= team.teamid %>">Delete team</a>
-    <% } %>
+
+  
 </main>
 
 <%- include ('../partials/footer') %>
