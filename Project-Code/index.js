@@ -284,11 +284,13 @@ app.get("/teams/:sportName", (req, res) => {
     });
 });
 
-app.post("/team/:teamID", (req, res) => {
+app.get("/team/:teamID", (req, res) => {
   db.tx(t => {
     // creating a sequence of transaction queries:
+    const sport = db.any(`SELECT sportName FROM sports WHERE sportID IN (SELECT sportID FROM teamsToSports WHERE teamID =  ${req.params.teamID} );`)
+    const onTeam = db.any(`SELECT * FROM teamsToPlayers WHERE playerID = ${req.session.user.playerid} AND teamID = ${req.params.teamID};`)
     const team = db.one("SELECT * FROM teams WHERE teamID=$1", [req.params.teamID])
-    const teamsToCaptains = db.one(`SELECT * FROM teamsToCaptains  WHERE teamID=$1`, [req.params.teamID])
+    const teamsToCaptains = db.one("SELECT * FROM teamsToCaptains WHERE teamID=$1", [req.params.teamID])
     const players = db.any(`SELECT *  FROM players 
     INNER JOIN teamsToPlayers ON players.playerID = teamsToPlayers.playerID
     WHERE teamsToPlayers.teamID = $1`, [req.params.teamID])
@@ -303,7 +305,7 @@ app.post("/team/:teamID", (req, res) => {
        WHERE games.gameid IN 
        (SELECT gameid FROM teamsToGames WHERE teamsToGames.teamID = $1) ORDER BY games.gameID;`,req.params.teamID);
     // returning a promise that determines a successful transaction:
-    return t.batch([team, teamsToCaptains, players, teamGames, numWinners, gamesQuery]); // all of the queries are to be resolved;
+    return t.batch([team, teamsToCaptains, players, teamGames, numWinners, gamesQuery, onTeam, sport]); // all of the queries are to be resolved;
   })
     .then(data => {
       // success, COMMIT was executed
@@ -314,7 +316,10 @@ app.post("/team/:teamID", (req, res) => {
         teamGames: data[3],
         numWinners: data[4],
         games: data[5],
-        user: req.session.user
+        user: req.session.user,
+        result: req.query.joinresult,
+        onTeam: data[6],
+        sport: data[7]
       });
     })
     .catch(err => {
@@ -324,6 +329,63 @@ app.post("/team/:teamID", (req, res) => {
       return res.redirect("/sports")
     });
 
+})
+
+
+
+
+app.post("/leaveTeam", (req, res) => {
+  db.any(`SELECT *
+  FROM teamsToPlayers
+  WHERE teamID = ${req.body.teamid};`) 
+  .then(data => {
+    if(data.length == 1) {
+      return res.redirect('/yourTeams');
+    }
+    else {
+      if(req.body.iscaptain == "true") {
+        db.any(`SELECT playerID FROM teamsToPlayers WHERE teamID = ${req.body.teamid} AND playerID != ${req.session.user.playerid} LIMIT 1;`)
+        .then(newCaptainID => {
+            if(newCaptainID.length > 0) {
+                  db.any(`DELETE FROM teamsToPlayers WHERE teamID = ${req.body.teamid} AND playerID = ${req.session.user.playerid}; 
+                  INSERT INTO teamsToCaptains (playerID, teamID) VALUES (${newCaptainID[0].playerid},${req.body.teamid});
+                  DELETE FROM teamsToCaptains WHERE teamID = ${req.body.teamid} AND playerID = ${req.session.user.playerid};`)
+                .then(data => {
+                  return res.redirect('/yourTeams');
+                })
+                .catch(err => {
+                  return res.redirect('/yourTeams');
+                });
+          }
+          else {
+            db.any(`DELETE FROM teamsToPlayers WHERE teamID = ${req.body.teamid} AND playerID = ${req.session.user.playerid}; 
+            DELETE FROM teamsToCaptains WHERE teamID = ${req.body.teamid} AND playerID = ${req.session.user.playerid};`)
+                .then(data => {
+                  return res.redirect('/yourTeams');
+                })
+                .catch(err => {
+                  return res.redirect('/yourTeams');
+                });
+          }
+        })
+        .catch(err => {
+          return res.redirect('/yourTeams');
+        }); 
+      }
+      else {
+        db.any(`DELETE FROM teamsToPlayers WHERE teamID = ${req.body.teamid} AND playerID = ${req.session.user.playerid};`)
+                .then(data => {
+                  return res.redirect('/yourTeams');
+                })
+                .catch(err => {
+                  return res.redirect('/yourTeams');
+                });
+      }
+    }
+  })
+  .catch(err => {
+    return res.redirect('/yourTeams');
+  });
 })
 
 // untested because individual team page is broken
@@ -354,23 +416,35 @@ DELETE FROM teams WHERE teamID=$1;`
 })
 
 app.post("/team/join", (req, res) => {
-  const query = `INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);`
-  db.any(query, [req.session.user.playerid, req.body.teamid])
-    .then(() => {
-      db.one("SELECT * FROM teams WHERE teamID=$1", [req.body.teamid])
-        .then((team) => {
-          console.log("team:" + team.teamname);
-          return res.render(`./pages/team`, { team: team, error: false, message: 'Successfully joined team.', user: req.session.user });
-        })
-        .catch((err) => {
-          console.log(err);
-          return res.render(`./pages/sports`, { error: true, message: 'Unable to find team.', user: req.session.user });
-        });
+  db.any(`SELECT * FROM teamsToPlayers WHERE playerID = ${req.session.user.playerid} AND teamID = ${req.body.teamid};`) 
+    .then((data) => {
+        if(data.length > 0) {
+          return res.redirect("./"+req.body.teamid+"?joinresult=failure");
+        }
+        else {
+          const query = `INSERT INTO teamsToPlayers (playerID, teamID) VALUES ($1, $2);`
+          db.any(query, [req.session.user.playerid, req.body.teamid])
+            .then(() => {
+              db.one("SELECT * FROM teams WHERE teamID=$1", [req.body.teamid])
+                .then((team) => {
+                  console.log("team:" + team.teamname);
+                  return res.redirect("./"+req.body.teamid+"?joinresult=success");
+                })
+                .catch((err) => {
+                  console.log(err);
+                  return res.render(`./pages/sports`, { error: true, message: 'Unable to find team.', user: req.session.user });
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+              return res.render("./pages/teams", { error: true, message: 'Unable to join team.', user: req.session.user });
+            });
+        }
+      
     })
     .catch((err) => {
-      console.log(err);
-      return res.render("./pages/teams", { error: true, message: 'Unable to join team.', user: req.session.user });
-    });
+          return res.redirect("./"+req.body.teamid+"?joinresult=failure");
+});
 });
 
 app.post("/team/create", (req, res) => {
