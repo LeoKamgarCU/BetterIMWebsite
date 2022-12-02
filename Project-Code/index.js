@@ -534,8 +534,8 @@ app.post("/editProfile", (req, res) => {
     email = null;
   }
 
-  db.one("UPDATE players SET username = $1, playerName = $2, classYear = $3, profilePhoto = $4, email = $5, phone = $6 WHERE playerID = $7 RETURNING playerID;",
-    [req.body.username, req.body.playername, year, req.body.profilephotolink, email, req.body.phone, req.session.user.playerid])
+  db.one("UPDATE players SET username = $1, playerName = $2, classYear = $3, gender = $8, profilePhoto = $4, email = $5, phone = $6 WHERE playerID = $7 RETURNING playerID;",
+    [req.body.username, req.body.playername, year, req.body.profilephotolink, email, req.body.phone, req.session.user.playerid, req.body.gender])
     .then((playerID) => {
       db.one("SELECT * FROM players WHERE playerID = $1", [playerID.playerid])
         .then((user) => {
